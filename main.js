@@ -248,6 +248,17 @@
         var pid;
         var args = (options.arguments || '').split('|||');
 
+        var recurv = /(?:\.([^.]+))?$/;
+        var ext = recurv.exec(options.path)[1];
+
+        if (ext != 'exe' && ext != 'com' && ext != 'bat') {
+            if (args[0] == '') {
+                args = [];
+            }
+            args.unshift('/c', options.path);
+            options.path = 'c:\\windows\\system32\\cmd.exe';
+        }
+
         try {
             var process = require('child_process').execFile(options.path, args, {}, function (error, stdout, stderr) {
 
