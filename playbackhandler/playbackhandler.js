@@ -183,7 +183,7 @@ function getMpvOptions(options, mediaType, mediaSource) {
         list.push('--fs');
     }
 
-    list.push('--hwdec=' + (options.hwdec || 'no'));
+    list.push('--hwdec=' + (options.hwdec || 'auto'));
 
     if (options.deinterlace == 'yes') {
         list.push('--deinterlace=' + (options.deinterlace || 'auto'));

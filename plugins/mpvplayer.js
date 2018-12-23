@@ -222,6 +222,10 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 Method: 'External'
             });
             profile.SubtitleProfiles.push({
+                Format: 'vtt',
+                Method: 'External'
+            });
+            profile.SubtitleProfiles.push({
                 Format: 'srt',
                 Method: 'Embed'
             });
