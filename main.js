@@ -27,9 +27,18 @@
         }
     });
 
+    function getWebContents() {
+        var win = mainWindow;
+        if (win) {
+            return win.webContents;
+        }
+
+        return null;
+    }
+
     function onWindowMoved() {
 
-        mainWindow.webContents.executeJavaScript('window.dispatchEvent(new CustomEvent("move", {}));');
+        getWebContents().executeJavaScript('window.dispatchEvent(new CustomEvent("move", {}));');
     }
 
     var currentWindowState = 'Normal';
@@ -114,7 +123,7 @@
     function onWindowStateChanged(state) {
 
         currentWindowState = state;
-        mainWindow.webContents.executeJavaScript('document.windowState="' + state + '";document.dispatchEvent(new CustomEvent("windowstatechanged", {detail:{windowState:"' + state + '"}}));');
+        getWebContents().executeJavaScript('document.windowState="' + state + '";document.dispatchEvent(new CustomEvent("windowstatechanged", {detail:{windowState:"' + state + '"}}));');
     }
 
     function onMinimize() {
@@ -509,12 +518,9 @@
     function sendJavascript(script) {
 
         // Add some null checks to handle attempts to send JS when the process is closing or has closed
-        var win = mainWindow;
-        if (win) {
-            var web = win.webContents;
-            if (web) {
-                web.executeJavaScript(script);
-            }
+        var web = getWebContents();
+        if (web) {
+            web.executeJavaScript(script);
         }
     }
 
@@ -585,13 +591,13 @@
         switch (cmd) {
 
             case 'browser-backward':
-                if (mainWindow.webContents.canGoBack()) {
-                    mainWindow.webContents.goBack();
+                if (getWebContents().canGoBack()) {
+                    getWebContents().goBack();
                 }
                 break;
             case 'browser-forward':
-                if (mainWindow.webContents.canGoForward()) {
-                    mainWindow.webContents.goForward();
+                if (getWebContents().canGoForward()) {
+                    getWebContents().goForward();
                 }
                 break;
             case 'browser-stop':
@@ -709,7 +715,7 @@
             require("fs").writeFileSync(windowStatePath, JSON.stringify(data));
         }
 
-        mainWindow.webContents.executeJavaScript('AppCloseHelper.onClosing();');
+        getWebContents().executeJavaScript('AppCloseHelper.onClosing();');
 
         // Unregister all shortcuts.
         electron.globalShortcut.unregisterAll();
@@ -887,7 +893,7 @@
                 mainWindow.openDevTools();
             }
 
-            mainWindow.webContents.on('dom-ready', setStartInfo);
+            getWebContents().on('dom-ready', setStartInfo);
 
             var url = getAppUrl();
 
