@@ -97,8 +97,8 @@ function unmute() {
 }
 
 function video_toggle() {
-    var isRpi = require('detect-rpi');
-    if (isRpi()) {
+    var isLinux = require('is-linux');
+    if (isLinux()) {
         mpvPlayer.cycleProperty("video");
     }
 }
@@ -892,6 +892,8 @@ function createMpv(options, mediaType, mediaSource) {
 
     mpvOptions.push('--wid=' + playerWindowId);
     mpvOptions.push('--no-osc');
+    mpvOptions.push('--no-input-cursor');
+    mpvOptions.push('--input-vo-keyboard=no');
 
     var mpvInitOptions = {
         "debug": false
