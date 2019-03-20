@@ -690,9 +690,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             return [
                 { name: '4:3', id: '4_3' },
                 { name: '16:9', id: '16_9' },
-                { name: globalize.translate('sharedcomponents#Auto'), id: 'bestfit' },
-                //{ name: globalize.translate('sharedcomponents#Fill'), id: 'fill' },
-                { name: globalize.translate('sharedcomponents#Original'), id: 'original' }
+                { name: globalize.translate('Auto'), id: 'bestfit' },
+                //{ name: globalize.translate('Fill'), id: 'fill' },
+                { name: globalize.translate('Original'), id: 'original' }
             ];
         };
 
