@@ -211,34 +211,9 @@ function getMpvOptions(options, mediaType, mediaSource) {
         }
     }
 
-    if (options.scale) {
-
-        list.push('--scale=' + (options.scale));
-    }
-
-    if (options.cscale) {
-
-        list.push('--cscale=' + (options.cscale));
-    }
-
-    if (options.dscale) {
-
-        list.push('--dscale=' + (options.dscale));
-    }
-
     if (options.interpolation) {
 
         list.push('--interpolation');
-
-        if (options.tscale) {
-
-            list.push('--tscale=' + (options.tscale));
-        }
-    }
-
-    if (options.correctdownscaling) {
-
-        list.push('--correct-downscaling');
     }
 
     if (options.videoStereoMode) {
