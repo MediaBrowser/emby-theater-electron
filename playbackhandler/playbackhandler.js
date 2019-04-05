@@ -241,21 +241,6 @@ function getMpvOptions(options, mediaType, mediaSource) {
         list.push('--correct-downscaling');
     }
 
-    if (options.sigmoidupscaling) {
-
-        list.push('--sigmoid-upscaling');
-    }
-
-    if (options.deband) {
-
-        list.push('--deband');
-    }
-
-    if (options.ditherdepth) {
-
-        list.push('--dither-depth=' + (options.ditherdepth));
-    }
-
     if (options.videoStereoMode) {
 
         list.push('--video-stereo-mode=' + options.videoStereoMode);
