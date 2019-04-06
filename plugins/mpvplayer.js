@@ -402,26 +402,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 default:
                     break;
             }
-            var fontFamily;
-            switch (subtitleAppearanceSettings.font || '') {
-
-                case 'smallcaps':
-                case 'typewriter':
-                case 'console':
-                    fontFamily = 'monospace';
-                    break;
-                case 'print':
-                    fontFamily = 'Times New Roman';
-                    break;
-                case 'cursive':
-                    fontFamily = 'cursive';
-                    break;
-                case 'casual':
-                    fontFamily = 'Comic Sans MS';
-                    break;
-                default:
-                    break;
-            }
 
             var requestBody = {
                 path: url,
@@ -440,7 +420,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     deinterlace: appSettings.get('mpv-deinterlace'),
                     hwdec: appSettings.get('mpv-hwdec'),
                     upmixAudioFor: appSettings.get('mpv-upmixaudiofor'),
-                    videoStereoMode: appSettings.get('mpv-videostereomode'),
                     openglhq: appSettings.get('mpv-openglhq') === 'true',
                     exclusiveAudio: appSettings.get('mpv-exclusiveaudio') === 'true',
                     videoSync: appSettings.get('mpv-videosync') === 'true' ? 'display-resample' : null,
@@ -453,7 +432,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     audioDelay2325: parseInt(appSettings.get('mpv-audiodelay2325') || 0),
                     largeCache: mediaSource.RunTimeTicks == null || options.item.Type === 'Recording' ? true : false,
                     subtitleFontSize: fontSize,
-                    subtitleFontFamily: fontFamily,
                     volume: playerState.volume || 100
                 }
             };

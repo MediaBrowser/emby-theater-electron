@@ -216,16 +216,6 @@ function getMpvOptions(options, mediaType, mediaSource) {
         list.push('--interpolation');
     }
 
-    if (options.videoStereoMode) {
-
-        list.push('--video-stereo-mode=' + options.videoStereoMode);
-    }
-
-    if (options.subtitleFontFamily) {
-
-        list.push('--sub-font=' + options.subtitleFontFamily);
-    }
-
     if (options.subtitleFontSize) {
 
         list.push('--sub-font-size=' + options.subtitleFontSize);
