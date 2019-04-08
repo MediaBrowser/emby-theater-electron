@@ -60,12 +60,13 @@
                     <div class="fieldDescription">${UserRefreshRateHelp}</div>
                 </div>
 
-                <div class="checkboxContainer checkboxContainer-withDescription">
-                    <label>
-                        <input type="checkbox" is="emby-checkbox" class="chkVideoSync" />
-                        <span>${EnableVideoDisplaySyncing}</span>
-                    </label>
-                    <div class="fieldDescription checkboxFieldDescription">${EnableVideoDisplaySyncingHelp}</div>
+                <div class="selectContainer">
+                    <select is="emby-select" class="selectVideoSync" label="${EnableVideoDisplaySyncing}">
+                        <option value="">${No}</option>
+                        <option value="display-resample">${DisplayResample}</option>
+                        <option value="display-vdrop">${DisplayVDrop}</option>
+                    </select>
+                    <div class="fieldDescription">${EnableVideoDisplaySyncingHelp}</div>
                 </div>
 
                 <div class="checkboxContainer checkboxContainer-withDescription">

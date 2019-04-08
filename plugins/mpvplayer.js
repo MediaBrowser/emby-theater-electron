@@ -422,7 +422,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     upmixAudioFor: appSettings.get('mpv-upmixaudiofor'),
                     openglhq: appSettings.get('mpv-openglhq') === 'true',
                     exclusiveAudio: appSettings.get('mpv-exclusiveaudio') === 'true',
-                    videoSync: appSettings.get('mpv-videosync') === 'true' ? 'display-resample' : null,
+                    videoSync: appSettings.get('mpv-videosyncmode'),
                     displaySync: appSettings.get('mpv-displaysync') === 'true',
                     displaySync_Override: appSettings.get('mpv-displaysync_override'),
                     interpolation: appSettings.get('mpv-interpolation') === 'true',

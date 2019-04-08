@@ -31,7 +31,7 @@
             appSettings.set('mpv-outputlevels', view.querySelector('.selectNominalRange').value);
             appSettings.set('mpv-displaysync', view.querySelector('.chkRefreshRateMode').checked);
             appSettings.set('mpv-displaysync_override', view.querySelector('.txtUserRefreshRate').value);
-            appSettings.set('mpv-videosync', view.querySelector('.chkVideoSync').checked);
+            appSettings.set('mpv-videosyncmode', view.querySelector('.selectVideoSync').value);
             appSettings.set('mpv-deinterlace', view.querySelector('.selectDeinterlace').value);
 
             appSettings.set('mpv-audiodelay', view.querySelector('.txtDefaultAudioDelay').value);
@@ -47,7 +47,7 @@
             view.querySelector('.selectNominalRange').value = appSettings.get('mpv-outputlevels') || '';
             view.querySelector('.chkRefreshRateMode').checked = appSettings.get('mpv-displaysync') === 'true';
             view.querySelector('.txtUserRefreshRate').value = appSettings.get('mpv-displaysync_override') || '';
-            view.querySelector('.chkVideoSync').checked = appSettings.get('mpv-videosync') === 'true';
+            view.querySelector('.selectVideoSync').value = appSettings.get('mpv-videosyncmode') || '';
             view.querySelector('.selectDeinterlace').value = appSettings.get('mpv-deinterlace') || '';
 
             view.querySelector('.txtDefaultAudioDelay').value = appSettings.get('mpv-audiodelay') || '0';
