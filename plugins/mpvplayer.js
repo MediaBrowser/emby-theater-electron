@@ -432,6 +432,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     audioDelay2325: parseInt(appSettings.get('mpv-audiodelay2325') || 0),
                     largeCache: mediaSource.RunTimeTicks == null || options.item.Type === 'Recording' ? true : false,
                     subtitleFontSize: fontSize,
+                    subtitleColor: subtitleAppearanceSettings.textColor && subtitleAppearanceSettings.textColor.indexOf('#') === 0 ? subtitleAppearanceSettings.textColor : null,
                     volume: playerState.volume || 100
                 }
             };

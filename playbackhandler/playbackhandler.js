@@ -221,6 +221,11 @@ function getMpvOptions(options, mediaType, mediaSource) {
         list.push('--sub-font-size=' + options.subtitleFontSize);
     }
 
+    if (options.subtitleColor) {
+
+        list.push('--sub-color=' + options.subtitleColor);
+    }
+
     var audioOptions = getMpvAudioOptions(options, mediaType);
     for (var i = 0, length = audioOptions.length; i < length; i++) {
         list.push(audioOptions[i]);
