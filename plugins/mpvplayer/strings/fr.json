@@ -1,6 +1,6 @@
 {
-    "DisplayResample": "Display resample.",
-    "DisplayVDrop": "Display video drop.",
+    "DisplayResample": "Afficher le r\u00e9-\u00e9chantillonnage.",
+    "DisplayVDrop": "Afficher les pertes vid\u00e9o.",
     "LabelOutputRange": "Plage de sortie\u00a0:",
     "LabelHardwareAccelerationMode": "Mode d'acc\u00e9l\u00e9ration mat\u00e9rielle\u00a0:",
     "Auto": "Auto",

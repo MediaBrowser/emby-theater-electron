@@ -1,6 +1,6 @@
 {
-    "DisplayResample": "Display resample.",
-    "DisplayVDrop": "Display video drop.",
+    "DisplayResample": "Volver a hacer Muestreo de Pantalla",
+    "DisplayVDrop": "Ignorar pantalla de video",
     "LabelOutputRange": "Rango de salida:",
     "LabelHardwareAccelerationMode": "Modo de aceleraci\u00f3n por hardware:",
     "Auto": "Autom\u00e1tico",
