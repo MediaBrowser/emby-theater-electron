@@ -724,7 +724,7 @@
             cecProcess.kill();
         }
 
-        app.quit();
+        //app.quit();
     }
 
     function parseCommandLine() {
@@ -826,9 +826,9 @@
         }
     }
 
-    app.on('quit', function () {
-        closeWindow(mainWindow);
-    });
+    //app.on('quit', function () {
+    //    closeWindow(mainWindow);
+    //});
 
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
@@ -864,13 +864,15 @@
                 webSecurity: false,
                 webgl: false,
                 nodeIntegration: false,
+                nodeIntegrationInWorker: false,
                 plugins: false,
                 webaudio: true,
                 java: false,
                 allowDisplayingInsecureContent: true,
                 allowRunningInsecureContent: true,
                 experimentalFeatures: false,
-                devTools: enableDevTools
+                devTools: enableDevTools,
+                enableRemoteModule: false
             },
 
             icon: __dirname + '/icon.ico'
