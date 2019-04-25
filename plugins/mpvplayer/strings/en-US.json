@@ -18,7 +18,7 @@
   "EnableDeinterlacing": "Enable deinterlacing",
   "EnableOpenGlHq": "Enable OpenGL high quality profile",
   "EnableVideoDisplaySyncing": "Enable video display syncing",
-  "EnableVideoDisplaySyncingHelp": "Resample audio to match the video. This mode will also try to adjust audio speed to compensate for other drift. (This means it will play the audio at a different speed every once in a while to reduce the A/V difference.)",
+  "EnableVideoDisplaySyncingHelp": "Resample audio to match the video. VDrop will drop video frames to compensate for drift.",
   "EnableInterpolation": "Enable interpolation",
   "EnableInterpolationHelp": "Reduce stuttering caused by mismatches in the video fps and display refresh rate (also known as judder).",
   "EnableExclusiveAudioMode": "Enable exclusive audio mode",
