@@ -152,7 +152,7 @@ function set_subtitlestream(player, index) {
 }
 
 function setDvbTeletextPage(player, stream) {
-    
+
     // cases to handle:
     // 00000000: 0001 0001 10
     // 00000000: 1088 0888
@@ -160,7 +160,7 @@ function setDvbTeletextPage(player, stream) {
     // If the stream contains multiple languages, just use the first
 
     var extradata = stream.Extradata;
-            
+
     if (extradata && extradata.length > 13) {
         var pageNumber = parseInt(extradata.substring(11, 14));
         if (pageNumber < 100) {
@@ -183,10 +183,18 @@ function getMpvOptions(options, mediaType, mediaSource) {
         list.push('--fs');
     }
 
-    list.push('--hwdec=' + (options.hwdec || 'auto'));
+    if (options.hwdec != 'unset') {
+        list.push('--hwdec=' + (options.hwdec || 'auto'));
+    }
 
-    if (options.deinterlace == 'yes') {
-        list.push('--deinterlace=' + (options.deinterlace || 'auto'));
+    var videoStream = (mediaSource.MediaStreams || []).filter(function (v) {
+        return v.Type == 'Video';
+    })[0];
+
+    if (options.deinterlace == 'yes' || (!options.deinterlace && videoStream != null && videoStream.IsInterlaced)) {
+        list.push('--deinterlace=yes');
+    } else {
+        list.push('--deinterlace=no');
     }
 
     list.push('--video-output-levels=' + (options.videoOutputLevels || 'auto'));
@@ -231,10 +239,6 @@ function getMpvOptions(options, mediaType, mediaSource) {
         list.push(audioOptions[i]);
     }
 
-    var videoStream = (mediaSource.MediaStreams || []).filter(function (v) {
-        return v.Type == 'Video';
-    })[0];
-
     var framerate = videoStream ? (videoStream.AverageFrameRate || videoStream.RealFrameRate) : 0;
 
     var audioDelay = framerate >= 23 && framerate <= 25 ? options.audioDelay2325 : options.audioDelay;
@@ -242,23 +246,17 @@ function getMpvOptions(options, mediaType, mediaSource) {
         list.push('--audio-delay=' + (audioDelay / 1000));
     }
 
-    if (options.genPts) {
-
-        list.push('--demuxer-lavf-genpts-mode=lavf');
-    }
-
     if (options.largeCache) {
 
         list.push('--demuxer-readahead-secs=1800');
         list.push('--cache-secs=1800');
 
-        var cacheSize = 2097152;
-        var backBuffer = Math.round(cacheSize * .8);
-        list.push('--cache=' + cacheSize.toString());
-        list.push('--cache-backbuffer=' + backBuffer.toString());
+        list.push('--cache=2097152');
+        list.push('--cache-backbuffer=1677722');
         list.push('--force-seekable=yes');
         list.push('--hr-seek=yes');
-        //list.push('--demuxer-lavf-hacks=no');
+
+        ////list.push('--demuxer-lavf-hacks=no');
     }
 
     if (mediaSource.RunTimeTicks == null) {

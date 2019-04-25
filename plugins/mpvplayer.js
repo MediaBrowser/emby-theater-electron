@@ -427,7 +427,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     displaySync_Override: appSettings.get('mpv-displaysync_override'),
                     interpolation: appSettings.get('mpv-interpolation') === 'true',
                     fullscreen: enableFullscreen,
-                    //genPts: mediaSource.RunTimeTicks ? false : true,
                     audioDelay: parseInt(appSettings.get('mpv-audiodelay') || '0'),
                     audioDelay2325: parseInt(appSettings.get('mpv-audiodelay2325') || 0),
                     largeCache: mediaSource.RunTimeTicks == null || options.item.Type === 'Recording' ? true : false,
