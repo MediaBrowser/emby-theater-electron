@@ -152,7 +152,7 @@ function set_subtitlestream(player, index) {
 }
 
 function setDvbTeletextPage(player, stream) {
-    
+
     // cases to handle:
     // 00000000: 0001 0001 10
     // 00000000: 1088 0888
@@ -160,7 +160,7 @@ function setDvbTeletextPage(player, stream) {
     // If the stream contains multiple languages, just use the first
 
     var extradata = stream.Extradata;
-            
+
     if (extradata && extradata.length > 13) {
         var pageNumber = parseInt(extradata.substring(11, 14));
         if (pageNumber < 100) {
@@ -894,6 +894,7 @@ function createMpv(options, mediaType, mediaSource) {
     mpvOptions.push('--no-osc');
     mpvOptions.push('--no-input-cursor');
     mpvOptions.push('--input-vo-keyboard=no');
+    mpvOptions.push('--audio-display=no');
 
     var mpvInitOptions = {
         "debug": false
