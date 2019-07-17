@@ -872,7 +872,8 @@
                 allowRunningInsecureContent: true,
                 experimentalFeatures: false,
                 devTools: enableDevTools,
-                enableRemoteModule: false
+                enableRemoteModule: false,
+                sandbox: false
             },
 
             icon: __dirname + '/icon.ico'
