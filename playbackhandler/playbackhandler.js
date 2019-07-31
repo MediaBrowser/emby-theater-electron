@@ -872,6 +872,7 @@ function createMpv(options, mediaType, mediaSource) {
     mpvOptions.push('--no-osc');
     mpvOptions.push('--no-input-cursor');
     mpvOptions.push('--input-vo-keyboard=no');
+    mpvOptions.push('--audio-display=no');
 
     var mpvInitOptions = {
         "debug": false
