@@ -36,7 +36,9 @@ function play(player, path) {
 }
 
 function stop() {
-    mpvPlayer.stop();
+    if (mpvPlayer) {
+        mpvPlayer.stop();
+    }
 }
 
 function pause() {
@@ -361,16 +363,18 @@ function cleanup() {
 
     var player = mpvPlayer;
 
-    player.removeAllListeners('timeposition');
-    player.removeAllListeners('started');
-    player.removeAllListeners('statuschange');
-    player.removeAllListeners('stopped');
+    if (player) {
+        player.removeAllListeners('timeposition');
+        player.removeAllListeners('started');
+        player.removeAllListeners('statuschange');
+        player.removeAllListeners('stopped');
 
-    try {
-        player.quit();
-    }
-    catch (err) {
-        console.log('error quitting mpv: ' + err);
+        try {
+            player.quit();
+        }
+        catch (err) {
+            console.log('error quitting mpv: ' + err);
+        }
     }
 
     delete mpvPlayer;
@@ -381,33 +385,48 @@ function cleanup() {
     playerStatus = null;
 }
 
-function getReturnJson(positionTicks) {
-    var playState = "playing";
-    if (playerStatus.pause) {
-        playState = "paused";
+function getReturnJson(customValues) {
+
+    var state;
+
+    var currentPlayerStatus = playerStatus;
+
+    if (currentPlayerStatus) {
+        var playState = "playing";
+
+        if (currentPlayerStatus.pause) {
+            playState = "paused";
+        }
+
+        if (currentPlayerStatus['idle-active']) {
+            playState = "idle";
+        }
+
+        state = {
+            isPaused: currentPlayerStatus.pause || false,
+            isMuted: currentPlayerStatus.mute || false,
+            volume: currentVolume || currentPlayerStatus.volume || 100,
+            positionTicks: timeposition,
+            playstate: playState,
+            demuxerCacheState: currentPlayerStatus['demuxer-cache-state']
+        }
+
+        if (currentPlayerStatus.duration) {
+
+            state.durationTicks = currentPlayerStatus.duration * 10000000;
+        } else if (currentPlayerStatus['demuxer-cache-time']) {
+            state.durationTicks = currentPlayerStatus['demuxer-cache-time'] * 10000000;
+        }
+    }
+    else {
+        state = { playstate: 'idle' };
     }
 
-    if (playerStatus['idle-active']) {
-        playState = "idle";
+    if (customValues) {
+        state = Object.assign(state, customValues);
     }
 
-    var state = {
-        isPaused: playerStatus.pause || false,
-        isMuted: playerStatus.mute || false,
-        volume: currentVolume || playerStatus.volume || 100,
-        positionTicks: positionTicks || timeposition,
-        playstate: playState,
-        demuxerCacheState: playerStatus['demuxer-cache-state']
-    }
-
-    if (playerStatus.duration) {
-
-        state.durationTicks = playerStatus.duration * 10000000;
-    } else if (playerStatus['demuxer-cache-time']) {
-        state.durationTicks = playerStatus['demuxer-cache-time'] * 10000000;
-    }
-
-    return Promise.resolve(JSON.stringify(state));
+    return JSON.stringify(state);
 }
 
 function getAudioStats(player) {
@@ -665,6 +684,7 @@ function getStatsJson(player) {
 }
 
 function processRequest(request, body) {
+
     return new Promise(function (resolve, reject) {
         var url = require('url');
         var url_parts = url.parse(request.url, true);
@@ -698,7 +718,7 @@ function processRequest(request, body) {
                         set_position(startPositionTicks);
                     }
 
-                    getReturnJson(startPositionTicks).then(resolve);
+                    resolve(getReturnJson({ positionTicks: startPositionTicks }));
                 }).catch(reject);
 
                 break;
@@ -710,96 +730,101 @@ function processRequest(request, body) {
                 }
                 break;
             case 'stop':
+
+                var returnJson = getReturnJson({ playstate: 'idle' });
                 stop();
-                getReturnJson().then(resolve);
+                resolve(returnJson);
                 break;
+
             case 'stopdestroy':
 
-                getReturnJson().then(function (returnJson) {
-                    if (playMediaType.toLowerCase() === 'audio') {
-                        currentVolume = playerStatus.volume || 100;
-                        fade(currentVolume).then(() => {
-                            stop();
-                            set_volume(currentVolume);
-                            currentVolume = null;
-                            cleanup();
-                        }).catch(reject);
-                    } else {
-                        stop();
-                        cleanup();
-                    }
+                var currentPlayerStatus = playerStatus;
 
+                if (playMediaType && currentPlayerStatus && playMediaType.toLowerCase() === 'audio') {
+                    currentVolume = currentPlayerStatus.volume || 100;
+                    fade(currentVolume).then(() => {
+                        var returnJson = getReturnJson({ playstate: 'idle' });
+                        stop();
+                        set_volume(currentVolume);
+                        currentVolume = null;
+                        cleanup();
+                        resolve(returnJson);
+
+                    }).catch(reject);
+                } else {
+                    var returnJson = getReturnJson({ playstate: 'idle' });
+                    stop();
+                    cleanup();
                     resolve(returnJson);
-                });
+                }
 
                 break;
             case 'positionticks':
                 var data = url_parts.query["val"];
                 set_position(data);
                 timeposition = data;
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'seekrelative':
                 var data = url_parts.query["val"];
                 mpvPlayer.seek(Math.round(data / 10000000));
-                //timeposition = (timeposition || 0) + data;
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'unpause':
                 unpause();
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'playpause':
                 pause_toggle();
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'pause':
                 pause();
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'volumeup':
                 set_volume(Math.min(100, (currentVolume || playerStatus.volume || 100) + 2));
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'volumedown':
                 set_volume(Math.max(1, (currentVolume || playerStatus.volume || 100) - 2));
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'volume':
                 var data = url_parts.query["val"];
                 set_volume(data);
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'aspectratio':
                 var data = url_parts.query["val"];
                 setAspectRatio(mpvPlayer, data);
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'mute':
                 mute();
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'unmute':
                 unmute();
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'setaudiostreamindex':
                 var data = url_parts.query["index"];
                 set_audiostream(mpvPlayer, data);
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'setsubtitlestreamindex':
                 var data = url_parts.query["index"];
                 set_subtitlestream(mpvPlayer, data);
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             case 'video_toggle':
                 video_toggle();
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
             default:
                 // This could be a refresh, e.g. player polling for data
-                getReturnJson().then(resolve);
+                resolve(getReturnJson());
                 break;
         }
     });

@@ -18,7 +18,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         var playerState = {
             volume: parseInt(appSettings.get('mpv-volume') || '100')
         };
-        var ignoreEnded;
+
         var videoDialog;
         var currentAspectRatio = 'bestfit';
 
@@ -359,7 +359,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
             var url = options.url;
 
-            ignoreEnded = false;
             currentSrc = url;
             currentAspectRatio = 'bestfit'
 
@@ -507,37 +506,18 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         self.stop = function (destroyPlayer) {
 
+            stopTimeUpdateInterval();
+
             var cmd = destroyPlayer ? 'stopdestroy' : 'stop';
 
-            return sendCommand(cmd).then(function () {
-
-                onEnded();
-
-                if (destroyPlayer) {
-                    destroyInternal(false);
-                }
-            });
+            return sendCommand(cmd);
         };
 
-        function destroyInternal(destroyCommand) {
-
-            if (destroyCommand) {
-                sendCommand('stopdestroy');
-            }
-
-            embyRouter.setTransparency('none');
-
-            var dlg = videoDialog;
-            if (dlg) {
-
-                videoDialog = null;
-
-                dlg.parentNode.removeChild(dlg);
-            }
-        }
-
         self.destroy = function () {
-            destroyInternal(true);
+
+            stopTimeUpdateInterval();
+
+            return sendCommand('stopdestroy');
         };
 
         self.playPause = function () {
@@ -700,10 +680,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         function onEnded() {
             stopTimeUpdateInterval();
 
-            if (!ignoreEnded) {
-                ignoreEnded = true;
-                events.trigger(self, 'stopped');
-            }
+            events.trigger(self, 'stopped');
         }
 
         function onTimeUpdate() {
@@ -745,6 +722,19 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             });
         }
 
+        function destroyInternal() {
+
+            embyRouter.setTransparency('none');
+
+            var dlg = videoDialog;
+            if (dlg) {
+
+                videoDialog = null;
+
+                dlg.parentNode.removeChild(dlg);
+            }
+        }
+
         function sendCommand(name, body) {
 
             return new Promise(function (resolve, reject) {
@@ -765,10 +755,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                         var state = JSON.parse(this.responseText);
                         var previousPlayerState = playerState;
 
-                        if (state.playstate == 'idle' && previousPlayerState.playstate != 'idle' && previousPlayerState.playstate) {
-                            onEnded();
-                            resolve(playerState);
-                            return;
+                        if (name === 'stopdestroy') {
+                            destroyInternal();
                         }
 
                         playerState = state;
@@ -778,7 +766,11 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                             onVolumeChange();
                         }
 
-                        if (previousPlayerState.isPaused !== state.isPaused) {
+                        if (state.playstate == 'idle' && previousPlayerState.playstate != 'idle' && previousPlayerState.playstate) {
+                            onEnded();
+                        }
+
+                        else if (previousPlayerState.isPaused !== state.isPaused) {
                             if (state.isPaused) {
                                 onPause();
                             } else if (previousPlayerState.isPaused) {
