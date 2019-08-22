@@ -1,6 +1,6 @@
 {
-    "DisplayResample": "Display resample.",
-    "DisplayVDrop": "Display video drop.",
+    "DisplayResample": "Zobraz p\u0159evzorkovan\u00e9",
+    "DisplayVDrop": "Zobraz zhor\u0161en\u00ed kvality videa",
     "LabelOutputRange": "V\u00fdstupn\u00ed rozsah:",
     "LabelHardwareAccelerationMode": "Re\u017eim hardwarov\u00e9 akcelerace:",
     "Auto": "Auto",
