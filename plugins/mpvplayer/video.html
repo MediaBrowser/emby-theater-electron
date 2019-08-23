@@ -1,92 +1,88 @@
-﻿<div class="view flex flex-grow view-centered">
-    <div is="emby-scroller" class="scrollFrameY flex flex-grow" data-mousewheel="true" data-horizontal="false" data-centerfocus="true">
-        <div class="scrollSlider flex flex-grow flex-direction-column padded-left padded-right padded-top">
+﻿<div is="emby-scroller" class="view flex flex-direction-column scrollFrameY flex-grow" data-mousewheel="true" data-horizontal="false" data-centerfocus="card">
+    <div class="scrollSlider flex-grow flex-direction-column padded-left padded-right padded-top-page padded-bottom-page settingsContainer">
+        <form style="margin:0 auto;" class="padded-top">
 
-            <form>
+            <div class="selectContainer">
+                <select is="emby-select" class="selectHwaMode" label="${LabelHardwareAccelerationMode}">
+                    <option value="">${Auto}</option>
+                    <option value="auto-copy">Auto (copy back)</option>
+                    <option value="no">${None}</option>
+                    <option value="cuda-copy">CUDA copy back</option>
+                    <option value="d3d11va">D3D (Windows 8+)</option>
+                    <option value="d3d11va-copy">D3D copy back (Windows 8+)</option>
+                    <option value="nvdec-copy">Nvidia NVDEC copy back</option>
+                    <option value="mmal">RPI</option>
+                    <option value="mmal-copy">RPI copy back</option>
+                    <option value="unset">Unset (for mpv.conf)</option>
+                </select>
+            </div>
 
-                <div class="selectContainer">
-                    <select is="emby-select" class="selectHwaMode" label="${LabelHardwareAccelerationMode}">
-                        <option value="">${Auto}</option>
-                        <option value="auto-copy">Auto (copy back)</option>
-                        <option value="no">${None}</option>
-                        <option value="cuda-copy">CUDA copy back</option>
-                        <option value="d3d11va">D3D (Windows 8+)</option>
-                        <option value="d3d11va-copy">D3D copy back (Windows 8+)</option>
-                        <option value="nvdec-copy">Nvidia NVDEC copy back</option>
-                        <option value="mmal">RPI</option>
-                        <option value="mmal-copy">RPI copy back</option>
-                        <option value="unset">Unset (for mpv.conf)</option>
-                    </select>
-                </div>
+            <div class="selectContainer">
+                <select is="emby-select" class="selectNominalRange" label="${LabelOutputRange}">
+                    <option value="">${Auto}</option>
+                    <option value="full">PC (0-255)</option>
+                    <option value="limited">Video (16-235)</option>
+                </select>
+                <div class="fieldDescription">${LabelOutputRangeHelp}</div>
+            </div>
 
-                <div class="selectContainer">
-                    <select is="emby-select" class="selectNominalRange" label="${LabelOutputRange}">
-                        <option value="">${Auto}</option>
-                        <option value="full">PC (0-255)</option>
-                        <option value="limited">Video (16-235)</option>
-                    </select>
-                    <div class="fieldDescription">${LabelOutputRangeHelp}</div>
-                </div>
+            <div class="selectContainer">
+                <select is="emby-select" class="selectDeinterlace" label="${EnableDeinterlacing}">
+                    <option value="">${Auto}</option>
+                    <option value="yes">${Yes}</option>
+                    <option value="no">${No}</option>
+                </select>
+            </div>
 
-                <div class="selectContainer">
-                    <select is="emby-select" class="selectDeinterlace" label="${EnableDeinterlacing}">
-                        <option value="">${Auto}</option>
-                        <option value="yes">${Yes}</option>
-                        <option value="no">${No}</option>
-                    </select>
-                </div>
+            <h1>${Advanced}</h1>
 
-                <h1>${Advanced}</h1>
+            <div class="inputContainer">
+                <input is="emby-input" type="number" step="1" class="txtDefaultAudioDelay" label="${DefaultAudioDelay}" />
+                <div class="fieldDescription">${DefaultAudioDelayHelp}</div>
+            </div>
 
-                <div class="inputContainer">
-                    <input is="emby-input" type="number" step="1" class="txtDefaultAudioDelay" label="${DefaultAudioDelay}" />
-                    <div class="fieldDescription">${DefaultAudioDelayHelp}</div>
-                </div>
+            <div class="inputContainer">
+                <input is="emby-input" type="number" step="1" class="txtAudioDelay2325" label="${AudioDelay2325}" />
+                <div class="fieldDescription">${AudioDelay2325Help}</div>
+            </div>
 
-                <div class="inputContainer">
-                    <input is="emby-input" type="number" step="1" class="txtAudioDelay2325" label="${AudioDelay2325}" />
-                    <div class="fieldDescription">${AudioDelay2325Help}</div>
-                </div>
+            <div class="checkboxContainer checkboxContainer-withDescription">
+                <label>
+                    <input type="checkbox" is="emby-checkbox" class="chkRefreshRateMode" />
+                    <span>${ChangeRefreshRate}</span>
+                </label>
+                <div class="fieldDescription checkboxFieldDescription">${ChangeRefreshRateHelp}</div>
+            </div>
 
-                <div class="checkboxContainer checkboxContainer-withDescription">
-                    <label>
-                        <input type="checkbox" is="emby-checkbox" class="chkRefreshRateMode" />
-                        <span>${ChangeRefreshRate}</span>
-                    </label>
-                    <div class="fieldDescription checkboxFieldDescription">${ChangeRefreshRateHelp}</div>
-                </div>
+            <div class="inputContainer">
+                <input is="emby-input" type="text" step="1" class="txtUserRefreshRate" label="${UserRefreshRate}" />
+                <div class="fieldDescription">${UserRefreshRateHelp}</div>
+            </div>
 
-                <div class="inputContainer">
-                    <input is="emby-input" type="text" step="1" class="txtUserRefreshRate" label="${UserRefreshRate}" />
-                    <div class="fieldDescription">${UserRefreshRateHelp}</div>
-                </div>
+            <div class="selectContainer">
+                <select is="emby-select" class="selectVideoSync" label="${EnableVideoDisplaySyncing}">
+                    <option value="">${Auto}</option>
+                    <option value="display-resample">${DisplayResample}</option>
+                    <option value="display-vdrop">${DisplayVDrop}</option>
+                </select>
+                <div class="fieldDescription">${EnableVideoDisplaySyncingHelp}</div>
+            </div>
 
-                <div class="selectContainer">
-                    <select is="emby-select" class="selectVideoSync" label="${EnableVideoDisplaySyncing}">
-                        <option value="">${Auto}</option>
-                        <option value="display-resample">${DisplayResample}</option>
-                        <option value="display-vdrop">${DisplayVDrop}</option>
-                    </select>
-                    <div class="fieldDescription">${EnableVideoDisplaySyncingHelp}</div>
-                </div>
+            <div class="checkboxContainer checkboxContainer-withDescription">
+                <label>
+                    <input type="checkbox" is="emby-checkbox" class="chkOpenglhq" />
+                    <span>${EnableOpenGlHq}</span>
+                </label>
+                <div class="fieldDescription checkboxFieldDescription">${SettingRequiresHighEnd}</div>
+            </div>
 
-                <div class="checkboxContainer checkboxContainer-withDescription">
-                    <label>
-                        <input type="checkbox" is="emby-checkbox" class="chkOpenglhq" />
-                        <span>${EnableOpenGlHq}</span>
-                    </label>
-                    <div class="fieldDescription checkboxFieldDescription">${SettingRequiresHighEnd}</div>
-                </div>
-
-                <div class="checkboxContainer checkboxContainer-withDescription">
-                    <label>
-                        <input type="checkbox" is="emby-checkbox" class="chkInterpolation" />
-                        <span>${EnableInterpolation}</span>
-                    </label>
-                    <div class="fieldDescription checkboxFieldDescription">${EnableInterpolationHelp}</div>
-                </div>
-            </form>
-
-        </div>
+            <div class="checkboxContainer checkboxContainer-withDescription">
+                <label>
+                    <input type="checkbox" is="emby-checkbox" class="chkInterpolation" />
+                    <span>${EnableInterpolation}</span>
+                </label>
+                <div class="fieldDescription checkboxFieldDescription">${EnableInterpolationHelp}</div>
+            </div>
+        </form>
     </div>
 </div>
