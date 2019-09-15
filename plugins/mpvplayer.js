@@ -14,6 +14,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         self.id = 'mpvmediaplayer';
         self.priority = -1;
 
+        window.MpvPlayer = self;
+
         var currentSrc;
         var playerState = {
             volume: parseInt(appSettings.get('mpv-volume') || '100')
@@ -454,13 +456,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     }
                 }
 
-                startTimeUpdateInterval();
-
                 return Promise.resolve();
-
-            }, function (err) {
-                stopTimeUpdateInterval();
-                throw err;
             });
         }
 
@@ -468,10 +464,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         self.currentTime = function (val) {
 
             if (val != null) {
-                sendCommand('positionticks?val=' + (val * 10000)).then(function (state) {
+                sendCommand('positionticks?val=' + (val * 10000)).then(function () {
 
                     events.trigger(self, 'seek');
-                    onTimeUpdate(state);
                 });
                 return;
             }
@@ -480,10 +475,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         };
 
         function seekRelative(offsetMs) {
-            sendCommand('seekrelative?val=' + (offsetMs * 10000)).then(function (state) {
+            sendCommand('seekrelative?val=' + (offsetMs * 10000)).then(function () {
 
                 events.trigger(self, 'seek');
-                onTimeUpdate(state);
             });
         }
 
@@ -506,8 +500,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         self.stop = function (destroyPlayer) {
 
-            stopTimeUpdateInterval();
-
             var cmd = destroyPlayer ? 'stopdestroy' : 'stop';
 
             return sendCommand(cmd);
@@ -515,29 +507,20 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         self.destroy = function () {
 
-            stopTimeUpdateInterval();
-
             return sendCommand('stopdestroy');
         };
 
         self.playPause = function () {
 
-            sendCommand('playpause').then(function (state) {
-
-                if (state.isPaused) {
-                    onPause();
-                } else {
-                    onUnpause();
-                }
-            });
+            sendCommand('playpause');
         };
 
         self.pause = function () {
-            sendCommand('pause').then(onPause);
+            sendCommand('pause');
         };
 
         self.unpause = function () {
-            sendCommand('unpause').then(onUnpause);
+            sendCommand('unpause');
         };
 
         self.paused = function () {
@@ -546,16 +529,16 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         };
 
         self.volumeUp = function (val) {
-            sendCommand('volumeUp').then(onVolumeChange);
+            sendCommand('volumeUp');
         };
 
         self.volumeDown = function (val) {
-            sendCommand('volumeDown').then(onVolumeChange);
+            sendCommand('volumeDown');
         };
 
         self.volume = function (val) {
             if (val != null) {
-                sendCommand('volume?val=' + val).then(onVolumeChange);
+                sendCommand('volume?val=' + val);
                 return;
             }
 
@@ -578,7 +561,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
             var cmd = mute ? 'mute' : 'unmute';
 
-            sendCommand(cmd).then(onVolumeChange);
+            sendCommand(cmd);
         };
 
         self.isMuted = function () {
@@ -642,7 +625,10 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 { name: '16:9', id: '16_9' },
                 { name: globalize.translate('Auto'), id: 'bestfit' },
                 //{ name: globalize.translate('Fill'), id: 'fill' },
-                { name: globalize.translate('Original'), id: 'original' }
+                {
+                    name:
+                        globalize.translate('Original'), id: 'original'
+                }
             ];
         };
 
@@ -650,6 +636,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
             var cacheState = playerState.demuxerCacheState;
             if (cacheState) {
+
                 var ranges = cacheState['seekable-ranges'];
 
                 if (ranges) {
@@ -664,51 +651,51 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             return true;
         };
 
-        var timeUpdateInterval;
-        function startTimeUpdateInterval() {
-            stopTimeUpdateInterval();
-            timeUpdateInterval = setInterval(onTimeUpdate, 250);
-        }
+        self._onTimeUpdate = function (ticks) {
 
-        function stopTimeUpdateInterval() {
-            if (timeUpdateInterval) {
-                clearInterval(timeUpdateInterval);
-                timeUpdateInterval = null;
+            playerState.positionTicks = ticks;
+
+            events.trigger(self, 'timeupdate');
+        };
+
+        self._onDurationUpdate = function (ticks) {
+
+            playerState.durationTicks = ticks;
+        };
+
+        self._onDemuxerCacheStateChanged = function (value) {
+            playerState.demuxerCacheState = value;
+        };
+
+        self._onError = function () {
+
+            events.trigger(self, 'error');
+        };
+
+        self._onPlayPause = function (paused) {
+
+            playerState.isPaused = paused;
+
+            if (paused) {
+                events.trigger(self, 'pause');
+            } else {
+                events.trigger(self, 'unpause');
             }
-        }
+        };
 
-        function onEnded() {
-            stopTimeUpdateInterval();
+        self._onVolumeChange = function (volume, muted) {
+
+            playerState.volume = volume;
+            playerState.isMuted = muted;
+
+            appSettings.set('mpv-volume', volume);
+            events.trigger(self, 'volumechange');
+        };
+
+        self._onStopped = function () {
 
             events.trigger(self, 'stopped');
-        }
-
-        function onTimeUpdate() {
-
-            updatePlayerState();
-            events.trigger(self, 'timeupdate');
-        }
-
-        function onVolumeChange() {
-
-            appSettings.set('mpv-volume', self.volume());
-            events.trigger(self, 'volumechange');
-        }
-
-        function onUnpause() {
-
-            events.trigger(self, 'unpause');
-        }
-
-        function onPause() {
-            events.trigger(self, 'pause');
-        }
-
-        function onError() {
-
-            stopTimeUpdateInterval();
-            events.trigger(self, 'error');
-        }
+        };
 
         function zoomIn(elem) {
 
@@ -744,7 +731,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 xhr.open('POST', 'http://127.0.0.1:8023/' + name, true);
 
                 xhr.onload = function () {
-                    if (this.responseText && this.status >= 200 && this.status <= 400) {
+                    if (this.status >= 200 && this.status <= 400) {
 
                         if (name === 'stats') {
 
@@ -752,33 +739,11 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                             return;
                         }
 
-                        var state = JSON.parse(this.responseText);
-                        var previousPlayerState = playerState;
-
                         if (name === 'stopdestroy') {
                             destroyInternal();
                         }
 
-                        playerState = state;
-
-                        if (previousPlayerState.isMuted !== state.isMuted ||
-                            previousPlayerState.volume !== state.volume) {
-                            onVolumeChange();
-                        }
-
-                        if (state.playstate == 'idle' && previousPlayerState.playstate != 'idle' && previousPlayerState.playstate) {
-                            onEnded();
-                        }
-
-                        else if (previousPlayerState.isPaused !== state.isPaused) {
-                            if (state.isPaused) {
-                                onPause();
-                            } else if (previousPlayerState.isPaused) {
-                                onUnpause();
-                            }
-                        }
-
-                        resolve(state);
+                        resolve();
                     } else {
                         reject();
                     }
@@ -793,11 +758,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     xhr.send();
                 }
             });
-        }
-
-        function updatePlayerState() {
-
-            return sendCommand('refresh');
         }
     }
 });

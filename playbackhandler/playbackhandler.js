@@ -1,5 +1,4 @@
 var processes = {};
-var timeposition = 0;
 var mainWindowRef
 var mpv = require('node-mpv');
 var mpvPlayer;
@@ -35,10 +34,32 @@ function play(player, path) {
     });
 }
 
+function setTimeoutPromise(ms) {
+
+    return new Promise(function (resolve, reject) {
+
+        setTimeout(resolve, ms);
+    });
+}
+
+function resolveWhenIdle() {
+
+    var currentPlayerStatus = playerStatus;
+    if (!currentPlayerStatus) {
+        return Promise.resolve();
+    }
+
+    return setTimeoutPromise(100).then(resolveWhenIdle);
+}
+
 function stop() {
     if (mpvPlayer) {
         mpvPlayer.stop();
+
+        return resolveWhenIdle();
     }
+
+    return Promise.resolve();
 }
 
 function pause() {
@@ -368,6 +389,9 @@ function cleanup() {
         player.removeAllListeners('started');
         player.removeAllListeners('statuschange');
         player.removeAllListeners('stopped');
+        player.removeAllListeners('error');
+        player.removeAllListeners('paused');
+        player.removeAllListeners('resumed');
 
         try {
             player.quit();
@@ -387,46 +411,45 @@ function cleanup() {
 
 function getReturnJson(customValues) {
 
-    var state;
+    //var state;
 
-    var currentPlayerStatus = playerStatus;
+    //var currentPlayerStatus = playerStatus;
 
-    if (currentPlayerStatus) {
-        var playState = "playing";
+    //if (currentPlayerStatus) {
+    //    var playState = "playing";
 
-        if (currentPlayerStatus.pause) {
-            playState = "paused";
-        }
+    //    if (currentPlayerStatus.pause) {
+    //        playState = "paused";
+    //    }
 
-        if (currentPlayerStatus['idle-active']) {
-            playState = "idle";
-        }
+    //    if (currentPlayerStatus['idle-active']) {
+    //        playState = "idle";
+    //    }
 
-        state = {
-            isPaused: currentPlayerStatus.pause || false,
-            isMuted: currentPlayerStatus.mute || false,
-            volume: currentVolume || currentPlayerStatus.volume || 100,
-            positionTicks: timeposition,
-            playstate: playState,
-            demuxerCacheState: currentPlayerStatus['demuxer-cache-state']
-        }
+    //    state = {
+    //        isPaused: currentPlayerStatus.pause || false,
+    //        isMuted: currentPlayerStatus.mute || false,
+    //        volume: currentVolume || currentPlayerStatus.volume || 100,
+    //        playstate: playState,
+    //        demuxerCacheState: currentPlayerStatus['demuxer-cache-state']
+    //    }
 
-        if (currentPlayerStatus.duration) {
+    //    if (currentPlayerStatus.duration) {
 
-            state.durationTicks = currentPlayerStatus.duration * 10000000;
-        } else if (currentPlayerStatus['demuxer-cache-time']) {
-            state.durationTicks = currentPlayerStatus['demuxer-cache-time'] * 10000000;
-        }
-    }
-    else {
-        state = { playstate: 'idle' };
-    }
+    //        state.durationTicks = currentPlayerStatus.duration * 10000000;
+    //    } else if (currentPlayerStatus['demuxer-cache-time']) {
+    //        state.durationTicks = currentPlayerStatus['demuxer-cache-time'] * 10000000;
+    //    }
+    //}
+    //else {
+    //    state = { playstate: 'idle' };
+    //}
 
-    if (customValues) {
-        state = Object.assign(state, customValues);
-    }
+    //if (customValues) {
+    //    state = Object.assign(state, customValues);
+    //}
 
-    return JSON.stringify(state);
+    return JSON.stringify({});
 }
 
 function getAudioStats(player) {
@@ -685,149 +708,123 @@ function getStatsJson(player) {
 
 function processRequest(request, body) {
 
-    return new Promise(function (resolve, reject) {
-        var url = require('url');
-        var url_parts = url.parse(request.url, true);
-        var action = url_parts.pathname.substring(1).toLowerCase();
+    var url = require('url');
+    var url_parts = url.parse(request.url, true);
+    var action = url_parts.pathname.substring(1).toLowerCase();
 
-        switch (action) {
+    switch (action) {
 
-            case 'play':
-                var data = JSON.parse(body);
-                playMediaSource = data.mediaSource;
-                createMpv(data.playerOptions, data.mediaType, playMediaSource);
-                playMediaType = data.mediaType;
+        case 'play':
+            var data = JSON.parse(body);
+            playMediaSource = data.mediaSource;
+            createMpv(data.playerOptions, data.mediaType, playMediaSource);
+            playMediaType = data.mediaType;
 
-                var startPositionTicks = data["startPositionTicks"];
+            var startPositionTicks = data["startPositionTicks"];
 
-                mpvPlayer.volume(data.playerOptions.volume || 100);
+            mpvPlayer.volume(data.playerOptions.volume || 100);
 
-                play(mpvPlayer, data.path).then(() => {
-                    if (playMediaSource.DefaultAudioStreamIndex != null && data.playMethod != 'Transcode') {
-                        set_audiostream(mpvPlayer, playMediaSource.DefaultAudioStreamIndex);
-                    }
-
-                    if (playMediaSource.DefaultSubtitleStreamIndex != null) {
-                        set_subtitlestream(mpvPlayer, playMediaSource.DefaultSubtitleStreamIndex);
-                    }
-                    else {
-                        set_subtitlestream(mpvPlayer, -1);
-                    }
-
-                    if (startPositionTicks != 0) {
-                        set_position(startPositionTicks);
-                    }
-
-                    resolve(getReturnJson({ positionTicks: startPositionTicks }));
-                }).catch(reject);
-
-                break;
-            case 'stats':
-                if (mpvPlayer) {
-                    getStatsJson(mpvPlayer).then(resolve);
-                } else {
-                    resolve('[]');
+            return play(mpvPlayer, data.path).then(() => {
+                if (playMediaSource.DefaultAudioStreamIndex != null && data.playMethod != 'Transcode') {
+                    set_audiostream(mpvPlayer, playMediaSource.DefaultAudioStreamIndex);
                 }
-                break;
-            case 'stop':
 
-                var returnJson = getReturnJson({ playstate: 'idle' });
-                stop();
-                resolve(returnJson);
-                break;
+                if (playMediaSource.DefaultSubtitleStreamIndex != null) {
+                    set_subtitlestream(mpvPlayer, playMediaSource.DefaultSubtitleStreamIndex);
+                }
+                else {
+                    set_subtitlestream(mpvPlayer, -1);
+                }
 
-            case 'stopdestroy':
+                if (startPositionTicks != 0) {
+                    set_position(startPositionTicks);
+                }
 
-                var currentPlayerStatus = playerStatus;
+                return Promise.resolve(getReturnJson());
+            });
 
-                if (playMediaType && currentPlayerStatus && playMediaType.toLowerCase() === 'audio') {
-                    currentVolume = currentPlayerStatus.volume || 100;
-                    fade(currentVolume).then(() => {
-                        var returnJson = getReturnJson({ playstate: 'idle' });
-                        stop();
+        case 'stats':
+            if (mpvPlayer) {
+                return getStatsJson(mpvPlayer);
+            } else {
+                return Promise.resolve('[]');
+            }
+            break;
+        case 'stop':
+            return stop();
+
+        case 'stopdestroy':
+
+            var currentPlayerStatus = playerStatus;
+
+            if (playMediaType && currentPlayerStatus && playMediaType.toLowerCase() === 'audio') {
+                currentVolume = currentPlayerStatus.volume || 100;
+                return fade(currentVolume).then(() => {
+
+                    return stop().then(function () {
+
                         set_volume(currentVolume);
                         currentVolume = null;
                         cleanup();
-                        resolve(returnJson);
+                        return Promise.resolve(getReturnJson());
+                    });
 
-                    }).catch(reject);
-                } else {
-                    var returnJson = getReturnJson({ playstate: 'idle' });
-                    stop();
-                    cleanup();
-                    resolve(returnJson);
-                }
-
-                break;
-            case 'positionticks':
-                var data = url_parts.query["val"];
-                set_position(data);
-                timeposition = data;
-                resolve(getReturnJson());
-                break;
-            case 'seekrelative':
-                var data = url_parts.query["val"];
-                mpvPlayer.seek(Math.round(data / 10000000));
-                resolve(getReturnJson());
-                break;
-            case 'unpause':
-                unpause();
-                resolve(getReturnJson());
-                break;
-            case 'playpause':
-                pause_toggle();
-                resolve(getReturnJson());
-                break;
-            case 'pause':
-                pause();
-                resolve(getReturnJson());
-                break;
-            case 'volumeup':
-                set_volume(Math.min(100, (currentVolume || playerStatus.volume || 100) + 2));
-                resolve(getReturnJson());
-                break;
-            case 'volumedown':
-                set_volume(Math.max(1, (currentVolume || playerStatus.volume || 100) - 2));
-                resolve(getReturnJson());
-                break;
-            case 'volume':
-                var data = url_parts.query["val"];
-                set_volume(data);
-                resolve(getReturnJson());
-                break;
-            case 'aspectratio':
-                var data = url_parts.query["val"];
-                setAspectRatio(mpvPlayer, data);
-                resolve(getReturnJson());
-                break;
-            case 'mute':
-                mute();
-                resolve(getReturnJson());
-                break;
-            case 'unmute':
-                unmute();
-                resolve(getReturnJson());
-                break;
-            case 'setaudiostreamindex':
-                var data = url_parts.query["index"];
-                set_audiostream(mpvPlayer, data);
-                resolve(getReturnJson());
-                break;
-            case 'setsubtitlestreamindex':
-                var data = url_parts.query["index"];
-                set_subtitlestream(mpvPlayer, data);
-                resolve(getReturnJson());
-                break;
-            case 'video_toggle':
-                video_toggle();
-                resolve(getReturnJson());
-                break;
-            default:
-                // This could be a refresh, e.g. player polling for data
-                resolve(getReturnJson());
-                break;
-        }
-    });
+                });
+            } else {
+                return stop();
+            }
+        case 'positionticks':
+            var data = url_parts.query["val"];
+            set_position(data);
+            return Promise.resolve(getReturnJson());
+        case 'seekrelative':
+            var data = url_parts.query["val"];
+            mpvPlayer.seek(Math.round(data / 10000000));
+            return Promise.resolve(getReturnJson());
+        case 'unpause':
+            unpause();
+            return Promise.resolve(getReturnJson());
+        case 'playpause':
+            pause_toggle();
+            return Promise.resolve(getReturnJson());
+        case 'pause':
+            pause();
+            return Promise.resolve(getReturnJson());
+        case 'volumeup':
+            set_volume(Math.min(100, (currentVolume || playerStatus.volume || 100) + 2));
+            return Promise.resolve(getReturnJson());
+        case 'volumedown':
+            set_volume(Math.max(1, (currentVolume || playerStatus.volume || 100) - 2));
+            return Promise.resolve(getReturnJson());
+        case 'volume':
+            var data = url_parts.query["val"];
+            set_volume(data);
+            return Promise.resolve(getReturnJson());
+        case 'aspectratio':
+            var data = url_parts.query["val"];
+            setAspectRatio(mpvPlayer, data);
+            return Promise.resolve(getReturnJson());
+        case 'mute':
+            mute();
+            return Promise.resolve(getReturnJson());
+        case 'unmute':
+            unmute();
+            return Promise.resolve(getReturnJson());
+        case 'setaudiostreamindex':
+            var data = url_parts.query["index"];
+            set_audiostream(mpvPlayer, data);
+            return Promise.resolve(getReturnJson());
+        case 'setsubtitlestreamindex':
+            var data = url_parts.query["index"];
+            set_subtitlestream(mpvPlayer, data);
+            return Promise.resolve(getReturnJson());
+        case 'video_toggle':
+            video_toggle();
+            return Promise.resolve(getReturnJson());
+        default:
+            // This could be a refresh, e.g. player polling for data
+            return Promise.resolve(getReturnJson());
+    }
 }
 
 function initialize(playerWindowIdString, mpvBinaryPath) {
@@ -836,7 +833,9 @@ function initialize(playerWindowIdString, mpvBinaryPath) {
 }
 
 function onMpvTimePosition(data) {
-    timeposition = data * 10000000;
+    var ticks = data * 10000000;
+
+    sendJavascript('MpvPlayer._onTimeUpdate(' + ticks.toString() + ');');
 }
 
 function onMpvStarted() {
@@ -849,17 +848,91 @@ function onMpvStarted() {
     mainWindowRef.focus();
 }
 
+function getDuration(currentPlayerStatus) {
+
+    if (currentPlayerStatus.duration) {
+
+        return currentPlayerStatus.duration;
+    } else if (currentPlayerStatus['demuxer-cache-time']) {
+        return currentPlayerStatus['demuxer-cache-time'];
+    }
+    return null;
+}
+
 function onMpvStatusChange(status) {
+
+    var currentPlayerStatus = playerStatus;
+
+    var volumeChanged = currentPlayerStatus && (status.volume != currentPlayerStatus.volume || status.mute != currentPlayerStatus.mute);
+    var durationChanged = currentPlayerStatus && (getDuration(status) != getDuration(currentPlayerStatus));
+
     playerStatus = status;
+
+    if (volumeChanged) {
+        onVolumeChange(status);
+    }
+
+    if (durationChanged) {
+        onDurationChange(status);
+    }
+
+    var demuxerCacheState = status['demuxer-cache-state'];
+    if (demuxerCacheState) {
+        sendJavascript('MpvPlayer._onDemuxerCacheStateChanged(' + JSON.stringify(demuxerCacheState) + ');');
+    }
 }
 
 function onMpvStopped() {
-    timeposition = 0;
+
+    if (currentPlayResolve || currentPlayReject) {
+        return;
+    }
+
+    cleanup();
+    sendJavascript('MpvPlayer._onStopped();');
 }
 
 function onMpvError() {
-    onMpvStopped();
-    cleanup();
+
+    var reject = currentPlayReject;
+    if (reject) {
+        currentPlayResolve = null;
+        currentPlayReject = null;
+        reject();
+    }
+    else {
+        cleanup();
+        sendJavascript('MpvPlayer._onError();');
+    }
+}
+
+function onMpvPaused() {
+    sendJavascript('MpvPlayer._onPlayPause(true);');
+}
+
+function onMpvResumed() {
+    sendJavascript('MpvPlayer._onPlayPause(false);');
+}
+
+function onDurationChange(currentPlayerStatus) {
+
+    var duration = getDuration(currentPlayerStatus);
+
+    if (duration == null) {
+        return;
+    }
+
+    var ticks = duration * 10000000;
+
+    sendJavascript('MpvPlayer._onDurationUpdate(' + ticks.toString() + ');');
+}
+
+function onVolumeChange(currentPlayerStatus) {
+
+    var volume = currentVolume || currentPlayerStatus.volume || 100;
+    var mute = currentPlayerStatus.mute || false;
+
+    sendJavascript('MpvPlayer._onVolumeChange(' + volume.toString() + ', ' + mute.toString().toLowerCase() + ');');
 }
 
 function createMpv(options, mediaType, mediaSource) {
@@ -897,12 +970,18 @@ function createMpv(options, mediaType, mediaSource) {
     mpvPlayer.observeProperty('idle-active', 13);
     mpvPlayer.observeProperty('demuxer-cache-time', 14);
     mpvPlayer.observeProperty('demuxer-cache-state', 15);
+    mpvPlayer.observeProperty('volume', 16);
+    mpvPlayer.observeProperty('mute', 17);
+    mpvPlayer.observeProperty('ao-volume', 18);
+    mpvPlayer.observeProperty('ao-mute', 19);
 
     mpvPlayer.on('timeposition', onMpvTimePosition);
     mpvPlayer.on('started', onMpvStarted);
     mpvPlayer.on('statuschange', onMpvStatusChange);
     mpvPlayer.on('stopped', onMpvStopped);
     mpvPlayer.on('error', onMpvError);
+    mpvPlayer.on('paused', onMpvPaused);
+    mpvPlayer.on('resumed', onMpvResumed);
 }
 
 function processNodeRequest(req, res) {
@@ -921,14 +1000,20 @@ function processNodeRequest(req, res) {
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(json);
             } else {
-                res.writeHead(500);
-                res.end();
+                res.writeHead(200);
+                res.end('');
             }
         }).catch(() => {
             res.writeHead(500);
             res.end();
         });
     });
+}
+
+var sendJavascript;
+function setNotifyWebViewFn(fn) {
+
+    sendJavascript = fn;
 }
 
 function registerMediaPlayerProtocol(protocol, mainWindow) {
@@ -942,3 +1027,4 @@ function registerMediaPlayerProtocol(protocol, mainWindow) {
 
 exports.initialize = initialize;
 exports.registerMediaPlayerProtocol = registerMediaPlayerProtocol;
+exports.setNotifyWebViewFn = setNotifyWebViewFn;

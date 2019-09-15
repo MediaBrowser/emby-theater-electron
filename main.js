@@ -150,7 +150,7 @@
 
         if (initialShowEventsComplete) {
             mainWindow.setMovable(false);
-            mainWindow.setResizable(false);
+            //mainWindow.setResizable(false);
         }
     }
 
@@ -160,7 +160,7 @@
 
         if (initialShowEventsComplete) {
             mainWindow.setMovable(true);
-            mainWindow.setResizable(true);
+            //mainWindow.setResizable(true);
         }
     }
 
@@ -211,7 +211,6 @@
         });
     }
 
-    var isTransparencyRequired = false;
     var windowStateOnLoad;
     function registerAppHost() {
 
@@ -266,10 +265,10 @@
                     closeProcess(require('querystring').parse(parts[1]).id, callback);
                     return;
                 case 'video-on':
-                    isTransparencyRequired = true;
+                    mainWindow.setResizable(false);
                     break;
                 case 'video-off':
-                    isTransparencyRequired = false;
+                    mainWindow.setResizable(true);
                     break;
                 case 'loaded':
 
@@ -810,6 +809,7 @@
         var playbackhandler = require('./playbackhandler/playbackhandler');
         playbackhandler.initialize(getWindowId(mainWindow), mpvPath);
         playbackhandler.registerMediaPlayerProtocol(electron.protocol, mainWindow);
+        playbackhandler.setNotifyWebViewFn(sendJavascript);
     }
 
     setCommandLineSwitches();
