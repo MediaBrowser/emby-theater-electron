@@ -1,4 +1,4 @@
-﻿define([], function () {
+﻿define(['events'], function (events) {
     'use strict';
 
     function getCapabilities() {
@@ -54,7 +54,7 @@
             'shutdown'
         ];
 
-        if (navigator.share){
+        if (navigator.share) {
             features.push('sharing');
         }
 
@@ -105,7 +105,7 @@
         return features;
     }();
 
-    return {
+    var appHost = {
         getWindowState: getWindowState,
         setWindowState: setWindowState,
         supports: function (command) {
@@ -190,4 +190,55 @@
             return null;
         }
     };
+
+    var _isHidden = false;
+    function onAppVisible() {
+
+        if (_isHidden) {
+            _isHidden = false;
+            //console.log('triggering app resume event');
+            events.trigger(appHost, 'resume');
+        }
+    }
+
+    function onAppHidden() {
+
+        if (!_isHidden) {
+            _isHidden = true;
+            //console.log('app is hidden');
+        }
+    }
+
+    var visibilityChange;
+    var visibilityState;
+    var doc = self.document;
+    if (typeof doc.visibilityState !== 'undefined') {
+        visibilityChange = 'visibilitychange';
+        visibilityState = 'hidden';
+    } else if (typeof doc.mozHidden !== 'undefined') {
+        visibilityChange = 'mozvisibilitychange';
+        visibilityState = 'mozVisibilityState';
+    } else if (typeof doc.msHidden !== 'undefined') {
+        visibilityChange = 'msvisibilitychange';
+        visibilityState = 'msVisibilityState';
+    } else if (typeof doc.webkitHidden !== 'undefined') {
+        visibilityChange = 'webkitvisibilitychange';
+        visibilityState = 'webkitVisibilityState';
+    }
+
+    doc.addEventListener(visibilityChange, function () {
+
+        if (document[visibilityState]) {
+            onAppHidden();
+        } else {
+            onAppVisible();
+        }
+    });
+
+    if (self.addEventListener) {
+        self.addEventListener('focus', onAppVisible);
+        self.addEventListener('blur', onAppHidden);
+    }
+
+    return appHost;
 });
