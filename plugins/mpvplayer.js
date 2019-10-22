@@ -433,11 +433,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     largeCache: mediaSource.RunTimeTicks == null || options.item.Type === 'Recording' ? true : false,
                     subtitleFontSize: fontSize,
                     subtitleColor: subtitleAppearanceSettings.textColor && subtitleAppearanceSettings.textColor.indexOf('#') === 0 ? subtitleAppearanceSettings.textColor : null,
-                    volume: playerState.volume || 100
+                    volume: playerState.volume
                 }
             };
-
-            playerState.volume = requestBody.playerOptions.volume;
 
             return sendCommand('play', requestBody).then(function () {
 

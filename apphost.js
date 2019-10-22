@@ -82,16 +82,18 @@
         features.push('htmlvideoautoplay');
         features.push('fullscreenchange');
         features.push('displayableversion');
+        features.push('externallinkdisplay');
+        features.push('externalpremium');
 
-        //features.push('remotecontrol');
+        features.push('remotecontrol');
 
         features.push('multiserver');
-        features.push('imageanalysis');
 
         features.push('remoteaudio');
         features.push('remotevideo');
 
         features.push('screensaver');
+        //features.push('targetblank');
 
         features.push('otherapppromotions');
         features.push('fileinput');
