@@ -22,7 +22,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         };
 
         var videoDialog;
-        var currentAspectRatio = 'bestfit';
+        var currentAspectRatio = 'auto';
 
         document.addEventListener('video-osd-show', function () {
             //alert("OSD Shown");
@@ -362,7 +362,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             var url = options.url;
 
             currentSrc = url;
-            currentAspectRatio = 'bestfit'
+            currentAspectRatio = 'auto'
 
             //var isVideo = options.mimeType.toLowerCase('video').indexOf() == 0;
             var isVideo = options.item.MediaType == 'Video';
@@ -621,8 +621,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             return [
                 { name: '4:3', id: '4_3' },
                 { name: '16:9', id: '16_9' },
-                { name: globalize.translate('Auto'), id: 'bestfit' },
-                //{ name: globalize.translate('Fill'), id: 'fill' },
+                { name: globalize.translate('Auto'), id: 'auto' },
+                { name: globalize.translate('Fill'), id: 'fill' },
                 {
                     name:
                         globalize.translate('Original'), id: 'original'

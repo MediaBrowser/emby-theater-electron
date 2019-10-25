@@ -88,27 +88,41 @@ function setAspectRatio(player, value) {
 
     switch (value) {
         case "4_3":
-            player.setProperty("video-unscaled", "no");
-            player.setProperty("video-aspect", "4:3");
+            player.setMultipleProperties({
+                "video-unscaled": "no",
+                "video-aspect": "4:3"
+            });
             break;
         case "16_9":
-            player.setProperty("video-unscaled", "no");
-            player.setProperty("video-aspect", "16:9");
+            player.setMultipleProperties({
+                "video-unscaled": "no",
+                "video-aspect": "16:9"
+            });
             break;
-        case "bestfit":
-            player.setProperty("video-unscaled", "no");
-            player.setProperty("video-aspect", "-1");
+        case "auto":
+            player.setMultipleProperties({
+                "video-unscaled": "no",
+                "video-aspect": "-1"
+            });
             break;
         case "fill":
             //var size = player.getProperty("android-surface-size");
             //var aspect = parseFloat(size.split("x")[0]) / parseFloat(size.split("x")[1]);
             //player.setProperty("video-unscaled", "no");
             //player.setProperty("video-aspect", aspect);
+            var rect = mainWindowRef.getBounds();
+            var aspect = rect.width.toString() + ":" + rect.height.toString();
+            player.setMultipleProperties({
+                "video-unscaled": "no",
+                "video-aspect": aspect
+            });
 
             break;
         case "original":
-            player.setProperty("video-unscaled", "downscale-big");
-            player.setProperty("video-aspect", "-1");
+            player.setMultipleProperties({
+                "video-unscaled": "downscale-big",
+                "video-aspect": "-1"
+            });
             break;
     }
 }
