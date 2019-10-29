@@ -982,22 +982,25 @@ function processNodeRequest(req, res) {
     req.on('data', function (chunk) {
         body.push(chunk);
     }).on('end', function () {
-
-        body = Buffer.concat(body).toString();
-        // at this point, `body` has the entire request body stored in it as a string
-
-        processRequest(req, body).then((json) => {
-            if (json != null) {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(json);
-            } else {
-                res.writeHead(200);
-                res.end('');
-            }
-        }).catch(() => {
-            res.writeHead(500);
+        if (req.method === "OPTIONS") {
+            res.writeHead(200, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*' });
             res.end();
-        });
+        } else {
+            body = Buffer.concat(body).toString();
+            // at this point, `body` has the entire request body stored in it as a string
+            processRequest(req, body).then((json) => {
+                if (json != null) {
+                    res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*' });
+                    res.end(json);
+                } else {
+                    res.writeHead(200, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': '*' });
+                    res.end('');
+                }
+            }).catch(() => {
+                res.writeHead(500);
+                res.end();
+            });
+        }
     });
 }
 
