@@ -108,10 +108,9 @@
     function onEnterFullscreen() {
         onWindowStateChanged('Fullscreen');
 
-        mainWindow.setAlwaysOnTop(true);
-        mainWindow.focus();
-
         if (initialShowEventsComplete) {
+            mainWindow.setAlwaysOnTop(true);
+            mainWindow.focus();
             mainWindow.setMovable(false);
             //mainWindow.setResizable(false);
         }
@@ -121,9 +120,8 @@
 
         onWindowStateChanged('Normal');
 
-        mainWindow.setAlwaysOnTop(false);
-
         if (initialShowEventsComplete) {
+            mainWindow.setAlwaysOnTop(false);
             mainWindow.setMovable(true);
             //mainWindow.setResizable(true);
         }
@@ -697,6 +695,9 @@
     function parseCommandLine() {
 
         var isWindows = require('is-windows');
+        var fs = require('fs');
+        var isRpi = require('detect-rpi');
+        var path = require('path');
 
         var result = {};
         var commandLineArguments = process.argv.slice(2);
@@ -711,7 +712,12 @@
         result.cecExePath = commandLineArguments[index] || 'cec-client';
         index++;
 
-        result.mpvPath = commandLineArguments[index];
+        var mpvPathRpi = path.join(__dirname, 'bin', 'mpv');
+        if (isRpi() && fs.existsSync(mpvPathRpi)) {
+            result.mpvPath = mpvPathRpi;
+        } else {
+            result.mpvPath = commandLineArguments[index];
+        }
         index++;
 
         return result;
@@ -791,6 +797,11 @@
 
             mainWindow.focus();
             initialShowEventsComplete = true;
+
+            var isRpi = require('detect-rpi');
+            if (isRpi()) {
+                mainWindow.setFullScreen(true);
+            }
         }
     }
 
@@ -905,12 +916,6 @@
             initCec();
 
             initPlaybackHandler(commandLineOptions.mpvPath);
-
-            var isRpi = require('detect-rpi');
-            if (isRpi()) {
-                mainWindow.setFullScreen(true);
-                mainWindow.setAlwaysOnTop(true);
-            }
         });
     });
 })();

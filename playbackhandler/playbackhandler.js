@@ -146,6 +146,20 @@ function video_toggle() {
     }
 }
 
+function show_video() {
+    var isLinux = require('is-linux');
+    if (isLinux()) {
+        mpvPlayer.setProperty("video", "yes");
+    }
+}
+
+function hide_video() {
+    var isLinux = require('is-linux');
+    if (isLinux()) {
+        mpvPlayer.setProperty("video", "no");
+    }
+}
+
 function set_audiostream(player, index) {
 
     var audioIndex = 0;
@@ -806,6 +820,12 @@ function processRequest(request, body) {
             return Promise.resolve(getReturnJson());
         case 'video_toggle':
             video_toggle();
+            return Promise.resolve(getReturnJson());
+        case 'showvideo':
+            show_video();
+            return Promise.resolve(getReturnJson());
+        case 'hidevideo':
+            hide_video();
             return Promise.resolve(getReturnJson());
         default:
             // This could be a refresh, e.g. player polling for data
