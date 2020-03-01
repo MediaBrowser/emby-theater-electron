@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
     var electron = require('electron');
     var app = electron.app;  // Module to control application life.
@@ -17,7 +17,7 @@
     var cecProcess;
 
     // Quit when all windows are closed.
-    app.on('window-all-closed', function() {
+    app.on('window-all-closed', function () {
         // On OS X it is common for applications and their menu bar
         // to stay active until the user quits explicitly with Cmd + Q
         if (process.platform != 'darwin') {
@@ -138,7 +138,7 @@
         var protocol = electron.protocol;
         var path = require('path');
 
-        protocol.registerFileProtocol(customFileProtocol, function(request, callback) {
+        protocol.registerFileProtocol(customFileProtocol, function (request, callback) {
 
             // Add 3 to account for ://
             var url = request.url.substr(customFileProtocol.length + 3);
@@ -160,7 +160,7 @@
     function sleepSystem() {
 
         var sleepMode = require('sleep-mode');
-        sleepMode(function(err, stderr, stdout) {
+        sleepMode(function (err, stderr, stdout) {
         });
     }
 
@@ -170,7 +170,7 @@
     function shutdownSystem() {
 
         var powerOff = require('power-off');
-        powerOff(function(err, stderr, stdout) {
+        powerOff(function (err, stderr, stdout) {
         });
     }
 
@@ -180,7 +180,7 @@
         var protocol = electron.protocol;
         var customProtocol = 'electronapphost';
 
-        protocol.registerStringProtocol(customProtocol, function(request, callback) {
+        protocol.registerStringProtocol(customProtocol, function (request, callback) {
 
             // Add 3 to account for ://
             var url = request.url.substr(customProtocol.length + 3);
@@ -269,7 +269,7 @@
         var args = (options.arguments || '').split('|||');
 
         try {
-            var process = require('child_process').execFile(options.path, args, {}, function(error, stdout, stderr) {
+            var process = require('child_process').execFile(options.path, args, {}, function (error, stdout, stderr) {
 
                 if (error) {
                     console.log('Process closed with error: ' + error);
@@ -302,7 +302,7 @@
         var protocol = electron.protocol;
         var customProtocol = 'electronfs';
 
-        protocol.registerStringProtocol(customProtocol, function(request, callback) {
+        protocol.registerStringProtocol(customProtocol, function (request, callback) {
 
             // Add 3 to account for ://
             var url = request.url.substr(customProtocol.length + 3).split('?')[0];
@@ -338,7 +338,7 @@
         var customProtocol = 'electronserverdiscovery';
         var serverdiscovery = require('./serverdiscovery/serverdiscovery-native');
 
-        protocol.registerStringProtocol(customProtocol, function(request, callback) {
+        protocol.registerStringProtocol(customProtocol, function (request, callback) {
 
             // Add 3 to account for ://
             var url = request.url.substr(customProtocol.length + 3).split('?')[0];
@@ -362,7 +362,7 @@
         var customProtocol = 'electronwakeonlan';
         var wakeonlan = require('./wakeonlan/wakeonlan-native');
 
-        protocol.registerStringProtocol(customProtocol, function(request, callback) {
+        protocol.registerStringProtocol(customProtocol, function (request, callback) {
 
             // Add 3 to account for ://
             var url = request.url.substr(customProtocol.length + 3).split('?')[0];
@@ -411,7 +411,7 @@
     var startInfoJson;
     function loadStartInfo() {
 
-        return new Promise(function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
 
             var os = require("os");
 
@@ -422,9 +422,9 @@
             var pluginDirectory = path.normalize(__dirname + '/plugins');
             var scriptsDirectory = path.normalize(__dirname + '/scripts');
 
-            fs.readdir(pluginDirectory, function(err, pluginFiles) {
+            fs.readdir(pluginDirectory, function (err, pluginFiles) {
 
-                fs.readdir(scriptsDirectory, function(err, scriptFiles) {
+                fs.readdir(scriptsDirectory, function (err, scriptFiles) {
 
                     pluginFiles = pluginFiles || [];
                     scriptFiles = scriptFiles || [];
@@ -443,15 +443,15 @@
                         deviceName: os.hostname(),
                         deviceId: os.hostname(),
                         supportsTransparentWindow: supportsTransparentWindow(),
-                        plugins: pluginFiles.filter(function(f) {
+                        plugins: pluginFiles.filter(function (f) {
 
                             return f.indexOf('.js') != -1;
 
-                        }).map(function(f) {
+                        }).map(function (f) {
 
                             return 'file://' + replaceAll(path.normalize(pluginDirectory + '/' + f), '\\', '/');
                         }),
-                        scripts: scriptFiles.map(function(f) {
+                        scripts: scriptFiles.map(function (f) {
 
                             return 'file://' + replaceAll(path.normalize(scriptsDirectory + '/' + f), '\\', '/');
                         })
@@ -788,20 +788,14 @@
 
     setCommandLineSwitches();
 
-    var fullscreenOnShow = false;
-    var windowShowCount = 0;
     function onWindowShow() {
 
-        windowShowCount++;
-        if (windowShowCount == 2) {
+        mainWindow.focus();
+        initialShowEventsComplete = true;
 
-            mainWindow.focus();
-            initialShowEventsComplete = true;
-
-            var isRpi = require('detect-rpi');
-            if (isRpi()) {
-                mainWindow.setFullScreen(true);
-            }
+        var isRpi = require('detect-rpi');
+        if (isRpi()) {
+            mainWindow.setFullScreen(true);
         }
     }
 
@@ -811,7 +805,7 @@
 
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
-    app.on('ready', function() {
+    app.on('ready', function () {
 
         var isWindows = require('is-windows');
         var windowStatePath = getWindowStateDataPath();
@@ -867,7 +861,7 @@
 
         // Create the browser window.
 
-        loadStartInfo().then(function() {
+        loadStartInfo().then(function () {
 
             mainWindow = new BrowserWindow(windowOptions);
 
@@ -903,13 +897,6 @@
             mainWindow.on("unmaximize", onUnMaximize);
 
             mainWindow.on("show", onWindowShow);
-
-            // Only the main window should be set to full screen.
-            // This is done after the window is shown because the
-            // player window otherwise is shown behind the task bar.
-            if (previousWindowInfo.state == 'Fullscreen') {
-                fullscreenOnShow = true;
-            }
 
             mainWindow.show();
 
