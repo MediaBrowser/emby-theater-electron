@@ -87,22 +87,11 @@ function set_position(data) {
 function setAspectRatio(player, value) {
 
     switch (value) {
-        case "4_3":
-            player.setMultipleProperties({
-                "video-unscaled": "no",
-                "video-aspect": "4:3"
-            });
-            break;
-        case "16_9":
-            player.setMultipleProperties({
-                "video-unscaled": "no",
-                "video-aspect": "16:9"
-            });
-            break;
         case "auto":
             player.setMultipleProperties({
                 "video-unscaled": "no",
-                "video-aspect": "-1"
+                "video-aspect": "-1",
+                "panscan": "0"
             });
             break;
         case "fill":
@@ -114,14 +103,16 @@ function setAspectRatio(player, value) {
             var aspect = rect.width.toString() + ":" + rect.height.toString();
             player.setMultipleProperties({
                 "video-unscaled": "no",
-                "video-aspect": aspect
+                "video-aspect": aspect,
+                "panscan": "0"
             });
 
             break;
-        case "original":
+        case "cover":
             player.setMultipleProperties({
-                "video-unscaled": "downscale-big",
-                "video-aspect": "-1"
+                "video-unscaled": "no",
+                "video-aspect": "-1",
+                "panscan": "1"
             });
             break;
     }
@@ -306,10 +297,10 @@ function getMpvOptions(options, mediaType, mediaSource) {
     if (options.largeCache) {
 
         list.push('--demuxer-readahead-secs=1800');
-        list.push('--cache-secs=1800');
+        //list.push('--cache-secs=1800');
 
-        list.push('--cache=2097152');
-        list.push('--cache-backbuffer=1677722');
+        //list.push('--cache=2097152');
+        //list.push('--cache-backbuffer=1677722');
         list.push('--force-seekable=yes');
         list.push('--hr-seek=yes');
 

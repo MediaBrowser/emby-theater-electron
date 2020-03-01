@@ -45,7 +45,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 type: 'settings',
                 title: 'Audio',
                 category: 'Playback',
-                thumbImage: ''
+                thumbImage: '',
+                icon: 'audiotrack',
+                settingsTheme: true
             });
 
             if (appHost.supports('windowtransparency')) {
@@ -56,7 +58,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     type: 'settings',
                     title: 'Video',
                     category: 'Playback',
-                    thumbImage: ''
+                    thumbImage: '',
+                    icon: 'tv',
+                    settingsTheme: true
                 });
             }
 
@@ -73,8 +77,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             });
 
             files.push({
-                lang: 'en-us',
-                path: pluginManager.mapPath(self, 'mpvplayer/strings/en-US.json')
+                lang: 'el',
+                path: pluginManager.mapPath(self, 'mpvplayer/strings/el.json')
             });
 
             files.push({
@@ -95,6 +99,11 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             files.push({
                 lang: 'it',
                 path: pluginManager.mapPath(self, 'mpvplayer/strings/it.json')
+            });
+
+            files.push({
+                lang: 'ja',
+                path: pluginManager.mapPath(self, 'mpvplayer/strings/ja.json')
             });
 
             files.push({
@@ -619,14 +628,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         self.getSupportedAspectRatios = function () {
 
             return [
-                { name: '4:3', id: '4_3' },
-                { name: '16:9', id: '16_9' },
                 { name: globalize.translate('Auto'), id: 'auto' },
-                { name: globalize.translate('Fill'), id: 'fill' },
-                {
-                    name:
-                        globalize.translate('Original'), id: 'original'
-                }
+                { name: globalize.translate('Cover'), id: 'cover' },
+                { name: globalize.translate('Fill'), id: 'fill' }
             ];
         };
 
