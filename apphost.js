@@ -1,17 +1,6 @@
 ﻿define(['events'], function (events) {
     'use strict';
 
-    function getCapabilities() {
-
-        var caps = {
-            PlayableMediaTypes: ['Audio', 'Video'],
-
-            SupportsPersistentIdentifier: true
-        };
-
-        return Promise.resolve(caps);
-    }
-
     function getWindowState() {
         return document.windowState || 'Normal';
     }
@@ -103,6 +92,7 @@
         features.push('subtitleappearancesettings');
 
         features.push('displaylanguage');
+        //features.push('chromecast');
 
         return features;
     }();
@@ -114,14 +104,6 @@
 
             return supportedFeatures.indexOf(command.toLowerCase()) !== -1;
         },
-        capabilities: function () {
-            return {
-                PlayableMediaTypes: ['Audio', 'Video'],
-
-                SupportsPersistentIdentifier: true
-            };
-        },
-        getCapabilities: getCapabilities,
         exit: function () {
             sendCommand('exit');
         },
@@ -189,9 +171,28 @@
 
         deviceIconUrl: function () {
 
-            return null;
+            return 'https://github.com/MediaBrowser/Emby.Resources/raw/master/images/Logos/logoicon.png';
         }
     };
+
+    var visibilityChange;
+    var visibilityState;
+    var doc = self.document;
+    if (doc) {
+        if (typeof doc.visibilityState !== 'undefined') {
+            visibilityChange = 'visibilitychange';
+            visibilityState = 'hidden';
+        } else if (typeof doc.mozHidden !== 'undefined') {
+            visibilityChange = 'mozvisibilitychange';
+            visibilityState = 'mozVisibilityState';
+        } else if (typeof doc.msHidden !== 'undefined') {
+            visibilityChange = 'msvisibilitychange';
+            visibilityState = 'msVisibilityState';
+        } else if (typeof doc.webkitHidden !== 'undefined') {
+            visibilityChange = 'webkitvisibilitychange';
+            visibilityState = 'webkitVisibilityState';
+        }
+    }
 
     var _isHidden = false;
     function onAppVisible() {
@@ -211,31 +212,16 @@
         }
     }
 
-    var visibilityChange;
-    var visibilityState;
-    var doc = self.document;
-    if (typeof doc.visibilityState !== 'undefined') {
-        visibilityChange = 'visibilitychange';
-        visibilityState = 'hidden';
-    } else if (typeof doc.mozHidden !== 'undefined') {
-        visibilityChange = 'mozvisibilitychange';
-        visibilityState = 'mozVisibilityState';
-    } else if (typeof doc.msHidden !== 'undefined') {
-        visibilityChange = 'msvisibilitychange';
-        visibilityState = 'msVisibilityState';
-    } else if (typeof doc.webkitHidden !== 'undefined') {
-        visibilityChange = 'webkitvisibilitychange';
-        visibilityState = 'webkitVisibilityState';
+    if (doc) {
+        doc.addEventListener(visibilityChange, function () {
+
+            if (document[visibilityState]) {
+                onAppHidden();
+            } else {
+                onAppVisible();
+            }
+        });
     }
-
-    doc.addEventListener(visibilityChange, function () {
-
-        if (document[visibilityState]) {
-            onAppHidden();
-        } else {
-            onAppVisible();
-        }
-    });
 
     if (self.addEventListener) {
         self.addEventListener('focus', onAppVisible);
