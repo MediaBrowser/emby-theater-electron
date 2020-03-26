@@ -111,7 +111,7 @@
         if (initialShowEventsComplete) {
             mainWindow.setAlwaysOnTop(true);
             mainWindow.focus();
-            mainWindow.setMovable(false);
+            mainWindow.moveable = false;
             //mainWindow.setResizable(false);
         }
     }
@@ -122,7 +122,7 @@
 
         if (initialShowEventsComplete) {
             mainWindow.setAlwaysOnTop(false);
-            mainWindow.setMovable(true);
+            mainWindow.movable = true;
             //mainWindow.setResizable(true);
         }
     }
@@ -228,10 +228,10 @@
                     closeProcess(require('querystring').parse(parts[1]).id, callback);
                     return;
                 case 'video-on':
-                    mainWindow.setResizable(false);
+                    mainWindow.resizable = false;
                     break;
                 case 'video-off':
-                    mainWindow.setResizable(true);
+                    mainWindow.resizable = true;
                     break;
                 case 'loaded':
 
@@ -438,7 +438,7 @@
                             fullscreenmanager: 'file://' + replaceAll(path.normalize(topDirectory + '/fullscreenmanager.js'), '\\', '/'),
                             filesystem: customFileProtocol + '://filesystem'
                         },
-                        name: app.getName(),
+                        name: app.name,
                         version: app.getVersion(),
                         deviceName: os.hostname(),
                         deviceId: os.hostname(),

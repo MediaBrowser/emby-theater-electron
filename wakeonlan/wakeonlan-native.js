@@ -8,8 +8,8 @@ var createMagicPacket = exports.createMagicPacket = function(mac){
     var parts  = mac.match(/[0-9a-fA-F]{2}/g);
     if(!parts || parts.length != MAC_LENGTH)
         throw new Error("malformed MAC address '" + mac + "'");
-    var buffer = new Buffer(PACKET_HEADER);
-    var bufMac = new Buffer(parts.map(function(p){
+    var buffer = Buffer.alloc(PACKET_HEADER);
+    var bufMac = Buffer.from(parts.map(function(p){
         return parseInt(p, 16);
     }));
     buffer.fill(0xff);
