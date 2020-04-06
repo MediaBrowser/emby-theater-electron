@@ -109,7 +109,7 @@
         onWindowStateChanged('Fullscreen');
 
         if (initialShowEventsComplete) {
-            mainWindow.setAlwaysOnTop(true);
+            //mainWindow.setAlwaysOnTop(true);
             mainWindow.focus();
             mainWindow.moveable = false;
             //mainWindow.setResizable(false);
@@ -121,7 +121,7 @@
         onWindowStateChanged('Normal');
 
         if (initialShowEventsComplete) {
-            mainWindow.setAlwaysOnTop(false);
+            //mainWindow.setAlwaysOnTop(false);
             mainWindow.movable = true;
             //mainWindow.setResizable(true);
         }
@@ -792,11 +792,6 @@
 
         mainWindow.focus();
         initialShowEventsComplete = true;
-
-        var isRpi = require('detect-rpi');
-        if (isRpi()) {
-            mainWindow.setFullScreen(true);
-        }
     }
 
     //app.on('quit', function () {
@@ -873,7 +868,12 @@
 
             var url = getAppUrl();
 
-            windowStateOnLoad = previousWindowInfo.state;
+            var isRpi = require('detect-rpi');
+            if (isRpi()) {
+                windowStateOnLoad = 'Fullscreen';
+            } else {
+                windowStateOnLoad = previousWindowInfo.state;
+            }
 
             addPathIntercepts();
 
