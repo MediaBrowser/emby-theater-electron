@@ -140,7 +140,7 @@ function video_toggle() {
 function show_video() {
     var isLinux = require('is-linux');
     if (isLinux()) {
-        mpvPlayer.setProperty("video", "yes");
+        mpvPlayer.setProperty("video", 1);
     }
 }
 
