@@ -26,12 +26,12 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         document.addEventListener('video-osd-show', function () {
             //alert("OSD Shown");
-            sendCommand("video_toggle");
+            sendCommand("hidevideo");
         });
 
         document.addEventListener('video-osd-hide', function () {
             //alert("OSD Hidden");
-            sendCommand("video_toggle");
+            sendCommand("showvideo");
         });
 
         self.getRoutes = function () {
