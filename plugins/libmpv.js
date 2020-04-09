@@ -871,7 +871,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         }
 
-        function getMpvAudioOptions() {
+        function getMpvAudioOptions(mediaType) {
 
             var dict = {};
 
@@ -884,14 +884,14 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 audioChannels = '7.1,stereo';
             }
 
-            var audioChannelsFilter = getAudioChannelsFilter();
+            var audioChannelsFilter = getAudioChannelsFilter(mediaType);
             if (audioChannelsFilter) {
                 audioFilters.push(audioChannelsFilter);
             }
 
             if (audioFilters.length) {
 
-                dict.af = 'lavfi=[' + (audioFilters.join(',')) + ']';
+                dict['af'] = 'lavfi=[' + (audioFilters.join(',')) + ']';
             }
 
             dict['audio-channels'] = audioChannels;
@@ -909,7 +909,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             return dict;
         }
 
-        function getAudioChannelsFilter() {
+        function getAudioChannelsFilter(mediaType) {
 
             var enableFilter = false;
             var upmixFor = (appSettings.get('mpv-upmixaudiofor') || '').split(',');
