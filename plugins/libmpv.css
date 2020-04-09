@@ -1,0 +1,43 @@
+.mpv-videoPlayerContainer {
+    position: fixed !important;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+}
+
+.mpv-videoPlayer {
+    width: 100%; 
+    height: 100%; 
+    display: block;
+}
+
+.mpv-videoPlayerContainer:not(.mpv-videoPlayerContainer-withBackdrop):not(.mpv-videoPlayerContainer-onTop) {
+    background: #000 !important;
+}
+
+.mpv-videoPlayerContainer-withBackdrop {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    background-attachment: fixed;
+    background-color: #000;
+}
+
+.mpv-videoPlayerContainer-onTop {
+    z-index: 1000;
+}
+
+@keyframes mpvvideoplayer-zoomin {
+    from {
+        transform: scale(.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: none;
+        opacity: initial;
+    }
+}

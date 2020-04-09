@@ -637,10 +637,14 @@
     function setCommandLineSwitches() {
 
         var isLinux = require('is-linux');
+        var path = require('path')
+        app.commandLine.appendSwitch("ignore-gpu-blacklist");
+        app.commandLine.appendSwitch("register-pepper-plugins", getPluginEntry(path.join(__dirname, 'plugins')));
+        app.commandLine.appendSwitch('no-sandbox');
 
         if (isLinux()) {
             app.commandLine.appendSwitch('enable-transparent-visuals');
-            app.disableHardwareAcceleration();
+            //app.disableHardwareAcceleration();
         }
 
         else if (process.platform === 'win32') {
@@ -649,6 +653,42 @@
             app.commandLine.appendSwitch('high-dpi-support', 'true');
             app.commandLine.appendSwitch('force-device-scale-factor', '1');
         }
+    }
+
+    function getPluginEntry(pluginDir, pluginName = `mpv-${process.platform}-${process.arch}.node`) {
+        var path = require('path')
+        const fullPluginPath = path.join(pluginDir, pluginName);
+        // Try relative path to workaround ASCII-only path restriction.
+        let pluginPath = path.relative(process.cwd(), fullPluginPath);
+        if (path.dirname(pluginPath) === ".") {
+            // "./plugin" is required only on Linux.
+            if (process.platform === "linux") {
+                pluginPath = `.${path.sep}${pluginPath}`;
+            }
+        } else {
+            // Relative plugin paths doesn't work reliably on Windows, see
+            // <https://github.com/Kagami/mpv.js/issues/9>.
+            if (process.platform === "win32") {
+                pluginPath = fullPluginPath;
+            }
+        }
+        if (containsNonASCII(pluginPath)) {
+            if (containsNonASCII(fullPluginPath)) {
+                throw new Error("Non-ASCII plugin path is not supported");
+            } else {
+                pluginPath = fullPluginPath;
+            }
+        }
+        return `${pluginPath};application/x-mpvjs`;
+    }
+
+    function containsNonASCII(str) {
+        for (let i = 0; i < str.length; i++) {
+            if (str.charCodeAt(i) > 255) {
+                return true;
+            }
+        }
+        return false;
     }
 
     function supportsTransparentWindow() {
@@ -833,7 +873,7 @@
                 webgl: false,
                 nodeIntegration: false,
                 nodeIntegrationInWorker: false,
-                plugins: false,
+                plugins: true,
                 webaudio: true,
                 java: false,
                 allowDisplayingInsecureContent: true,
