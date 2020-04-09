@@ -514,7 +514,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 })
                 .then(() => setSubtitleStream(mediaSource.DefaultSubtitleStreamIndex || -1))
                 .then(() => setProperty({
-                    start: `${Math.floor(startPositionTicks / 10000000)}`
+                    start: `${Math.floor(startPositionTicks / 10000000)}`,
+                    pause: false
                 }))
                 .then(() => {
                     if (isVideo) {
