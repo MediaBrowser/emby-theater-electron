@@ -501,7 +501,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 "demuxer-readahead-secs": mediaSource.RunTimeTicks == null || options.item.Type === 'Recording' ? 1800 : 1,
                 "sub-font-size": fontSize || 55,
                 "sub-color": subtitleAppearanceSettings.textColor && subtitleAppearanceSettings.textColor.indexOf('#') === 0 ? subtitleAppearanceSettings.textColor : 0,
-                "volume": playerState.volume
+                "volume": playerState.volume,
+                "audio-display": 'no'
             }
 
             return setProperty(Object.assign(playerOptions, audioDelay(), interlace(), displaySync(fullscreen), getMpvAudioOptions(mediaType)))
