@@ -639,7 +639,7 @@
         var isLinux = require('is-linux');
         var path = require('path')
         app.commandLine.appendSwitch("ignore-gpu-blacklist");
-        app.commandLine.appendSwitch("register-pepper-plugins", getPluginEntry(path.join(__dirname, 'plugins')));
+        app.commandLine.appendSwitch("register-pepper-plugins", getPluginEntry(path.join(__dirname, 'libmpv', process.arch)));
         app.commandLine.appendSwitch('no-sandbox');
 
         if (isLinux()) {
