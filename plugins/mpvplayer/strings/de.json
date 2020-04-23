@@ -30,5 +30,7 @@
     "DefaultAudioDelayHelp": "Audioverz\u00f6gerung in Millisekunden:",
     "AudioDelay2325": "Audioverz\u00f6gerung (23-25 Bilder\/Sekunde)",
     "AudioDelay2325Help": "Audioverz\u00f6gerung f\u00fcr Videos mit Bildraten von 23-25 Bilder\/Sekunde.",
-    "EnableExclusiveAudioModeHelp": "Verwende exklusiven Audioausgabemodus. In diesem Modus ist das System f\u00fcr weitere Audioausgaben gesperrt und nur Emby kann Audio wiedergeben."
+    "EnableExclusiveAudioModeHelp": "Verwende exklusiven Audioausgabemodus. In diesem Modus ist das System f\u00fcr weitere Audioausgaben gesperrt und nur Emby kann Audio wiedergeben.",
+    "ConfFile": "Konfigurationsdatei",
+    "ConfFileHelp": "Zu analysierende Konfigurationsdatei."
 }

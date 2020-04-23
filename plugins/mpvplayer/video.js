@@ -39,6 +39,7 @@
 
             appSettings.set('mpv-interpolation', view.querySelector('.chkInterpolation').checked);
             appSettings.set('mpv-openglhq', view.querySelector('.chkOpenglhq').checked);
+            appSettings.set('mpv-conf', view.querySelector('.txtConfFile').value);
         }
 
         function renderSettings() {
@@ -55,6 +56,7 @@
 
             view.querySelector('.chkOpenglhq').checked = appSettings.get('mpv-openglhq') === 'true';
             view.querySelector('.chkInterpolation').checked = appSettings.get('mpv-interpolation') === 'true';
+            view.querySelector('.txtConfFile').value = appSettings.get('mpv-conf') || '';
         }
     }
 

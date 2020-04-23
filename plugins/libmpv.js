@@ -377,8 +377,11 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             });
         }
 
+        function toTicks(val) {
+            return val * 10000000
+        }
+
         function message(recv) {
-            //console.log(recv)
             if (recv.data.type == 'ready') {
                 dispatchEvent(new Event(recv.data.type))
             }
@@ -386,31 +389,26 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             if (recv.data.type == 'property_change') {
                 switch (recv.data.data.name) {
                     case 'time-pos':
-                        self._onTimeUpdate(recv.data.data.value * 10000000)
+                        self._onTimeUpdate(toTicks(recv.data.data.value))
                         break
 
                     case 'pause':
-                        console.log(`${recv.data.data.name}: ${recv.data.data.value} `)
                         self._onPlayPause(recv.data.data.value)
                         break
 
                     case 'duration':
-                        console.log(`${recv.data.data.name}: ${recv.data.data.value} `)
-                        self._onDurationUpdate(recv.data.data.value * 10000000)
+                        self._onDurationUpdate(toTicks(recv.data.data.value))
                         break
 
                     case 'volume':
-                        console.log(`${recv.data.data.name}: ${recv.data.data.value} `)
                         self._onVolumeChange(recv.data.data.value)
                         break
 
                     case 'mute':
-                        console.log(`${recv.data.data.name}: ${recv.data.data.value} `)
                         self._onMute(recv.data.data.value)
                         break
 
                     case 'eof-reached':
-                        console.log(`${recv.data.data.name}: ${recv.data.data.value} `)
                         self._onStopped(recv.data.data.value)
                         break
 
@@ -423,7 +421,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                         break
 
                     default:
-                        //console.log(`${recv.data.data.name}: ${recv.data.data.value} `)
+                        //console.log(`${recv.data.data.name}: ${recv.data.data.value}`)
                         dispatchEvent(new CustomEvent(recv.data.data.name, { detail: recv.data.data.value }))
                         break
                 }
@@ -492,17 +490,45 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             }
 
             var playerOptions = {
-                "video-output-levels": appSettings.get('mpv-outputlevels') || 'auto',
-                "hwdec": appSettings.get('mpv-hwdec') || 'auto',
-                "profile": appSettings.get('mpv-openglhq') ? 'opengl-hq' : 'default',
-                "video-sync": appSettings.get('mpv-videosyncmode') || 'audio',
-                "interpolation": appSettings.get('mpv-interpolation') === 'true',
-                "fullscreen": fullscreen,
-                "demuxer-readahead-secs": mediaSource.RunTimeTicks == null || options.item.Type === 'Recording' ? 1800 : 1,
-                "sub-font-size": fontSize || 55,
-                "sub-color": subtitleAppearanceSettings.textColor && subtitleAppearanceSettings.textColor.indexOf('#') === 0 ? subtitleAppearanceSettings.textColor : 0,
+                "hwdec": appSettings.get('mpv-hwdec') || "auto",
                 "volume": playerState.volume,
                 "audio-display": 'no'
+            }
+
+            if (appSettings.get('mpv-conf')) {
+                playerOptions["include"] = appSettings.get('mpv-conf')
+            }
+
+            if (appSettings.get('mpv-outputlevels')) {
+                playerOptions["video-output-levels"] = appSettings.get('mpv-outputlevels')
+            }
+
+            if (appSettings.get('mpv-openglhq') === 'true') {
+                playerOptions["profile"] = 'opengl-hq'
+            }
+
+            if (appSettings.get('mpv-videosyncmode')) {
+                playerOptions["video-sync"] = appSettings.get('mpv-videosyncmode')
+            }
+
+            if (appSettings.get('mpv-interpolation') === 'true') {
+                playerOptions["interpolation"] = true
+            }
+
+            if (fullscreen) {
+                playerOptions["fullscreen"] = fullscreen
+            }
+
+            if (mediaSource.RunTimeTicks == null || options.item.Type === 'Recording') {
+                playerOptions["demuxer-readahead-secs"] = 1800
+            }
+
+            if (fontSize) {
+                playerOptions["sub-font-size"] = fontSize
+            }
+
+            if (subtitleAppearanceSettings.textColor && subtitleAppearanceSettings.textColor.indexOf('#') === 0) {
+                playerOptions["sub-color"] = subtitleAppearanceSettings.textColor
             }
 
             return setProperty(Object.assign(playerOptions, audioDelay(), interlace(), displaySync(fullscreen), getMpvAudioOptions(mediaType)))
@@ -964,6 +990,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     }
                 }
             }
+            return Promise.resolve()
         }
 
         function setDvbTeletextPage(stream) {
@@ -1007,7 +1034,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         function getProperty(data) {
             return new Promise((resolve, reject) => {
                 var type = 'get_property_async';
-                console.log({ type, data })
                 if (libmpv) {
                     libmpv.postMessage({ type, data })
                     addEventListener(data, (event) => {
@@ -1020,7 +1046,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         function observeProperty(props) {
             var type = 'observe_property';
             for (var data of props) {
-                console.log({ type, data })
                 if (libmpv) {
                     libmpv.postMessage({ type, data })
                 }
@@ -1032,7 +1057,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             var type = 'set_property';
             for (var prop of Object.keys(props)) {
                 var data = { name: prop, value: props[prop] }
-                console.log({ type, data })
                 if (libmpv) {
                     libmpv.postMessage({ type, data })
                 }
@@ -1042,7 +1066,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         function sendCommand(data) {
             var type = 'command';
-            console.log({ type, data })
             if (libmpv) {
                 libmpv.postMessage({ type, data })
             }
