@@ -417,7 +417,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                         self._onEstimatedVfFpsChanged(recv.data.data.value)
                         break
                     default:
-                        console.log(`${recv.data.data.name}: ${recv.data.data.value}`)
+                        //console.log(`${recv.data.data.name}: ${recv.data.data.value}`)
                         dispatchEvent(new CustomEvent(recv.data.data.name, { detail: recv.data.data.value }))
                         break
                 }
