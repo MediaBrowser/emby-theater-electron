@@ -228,10 +228,10 @@
                     closeProcess(require('querystring').parse(parts[1]).id, callback);
                     return;
                 case 'video-on':
-                    mainWindow.resizable = false;
+                    //mainWindow.resizable = false;
                     break;
                 case 'video-off':
-                    mainWindow.resizable = true;
+                    //mainWindow.resizable = true;
                     break;
                 case 'loaded':
 
