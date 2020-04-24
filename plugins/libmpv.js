@@ -1337,7 +1337,11 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'electronrefreshrate://list_possible')
                 xhr.onload = function () {
-                    resolve(this.response.split(';'))
+                    if (this.response) {
+                        resolve(this.response.split(';'))
+                    } else {
+                        resolve()
+                    }
                 }
                 xhr.onerror = reject;
                 xhr.send();
@@ -1349,8 +1353,12 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', 'electronrefreshrate://current')
                 xhr.onload = function () {
-                    var mat = this.response.match(/.*?(\d+)/)
-                    resolve(mat[1])
+                    if (this.response) {
+                        var mat = this.response.match(/.*?(\d+)/)
+                        resolve(mat[1])
+                    } else {
+                        resolve()
+                    }
                 }
                 xhr.onerror = reject;
                 xhr.send();
@@ -1362,8 +1370,12 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', `electronrefreshrate://change?rate=${rate}`)
                 xhr.onload = function () {
-                    var mat = this.response.match(/.*?(\d+)/)
-                    resolve(mat[1])
+                    if (this.response) {
+                        var mat = this.response.match(/.*?(\d+)/)
+                        resolve(mat[1])
+                    } else {
+                        resolve()
+                    }
                 }
                 xhr.onerror = reject;
                 xhr.send();
