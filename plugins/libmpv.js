@@ -28,6 +28,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         var orgRefreshRate;
         var curRefreshRate;
         var refreshRates;
+        var videoFps;
 
         self.getRoutes = function () {
 
@@ -837,6 +838,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         }
 
         self._onEstimatedVfFpsChanged = async function (fps) {
+            videoFps = fps
             if (appSettings.get('mpv-displaysync') === 'true' && refreshRates && fps) {
                 if ((window.innerWidth == screen.width) && (screen.height == window.innerHeight)) {
                     var calc = calcRefreshRate(refreshRates, fps)
@@ -849,9 +851,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                             }
                         }
                     }
-                    if (pos[0] != curRefreshRate) {
+                    if (pos[0] && pos[0] != curRefreshRate) {
                         curRefreshRate = await setRefreshRate(pos[0])
-                    } else if (calc[0] != curRefreshRate) {
+                    } else if (calc[0] && calc[0] != curRefreshRate) {
                         curRefreshRate = await setRefreshRate(calc[0])
                     }
                 }
@@ -874,7 +876,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
             embyRouter.setTransparency('none');
 
-            if (orgRefreshRate) {
+            if (orgRefreshRate != curRefreshRate) {
                 setRefreshRate(orgRefreshRate)
             }
 
@@ -1220,6 +1222,20 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     }
                 }
 
+                if (videoFps) {
+                    stats.push({
+                        label: 'Video fps:',
+                        value: videoFps.toFixed(2)
+                    });
+                }
+
+                if (curRefreshRate) {
+                    stats.push({
+                        label: 'Refresh Rate:',
+                        value: `${curRefreshRate} Hz`
+                    });
+                }
+
                 stats.push({
                     label: 'Dropped frames:',
                     value: getDroppedFrames(responses)
@@ -1322,10 +1338,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         }
 
         async function displaySync(fullscreen) {
-            if (appSettings.get('mpv-displaysync') === 'true') {
-                refreshRates = await getRefreshRateList()
-                orgRefreshRate = await getRefreshRate()
-            }
+            refreshRates = await getRefreshRateList()
+            orgRefreshRate = curRefreshRate = await getRefreshRate()
         }
 
         function calcRefreshRate(rates, fps) {
