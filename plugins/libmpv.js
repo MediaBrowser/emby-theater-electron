@@ -846,15 +846,19 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     if (appSettings.get('mpv-displaysync_override')) {
                         var prefs = appSettings.get('mpv-displaysync_override').split(';')
                         for (var pref of prefs) {
-                            if (calc.some((i) => i === pref)) {
+                            if (calc.some((i) => i == pref)) {
                                 pos.push(pref)
                             }
                         }
                     }
-                    if (pos[0] && pos[0] != curRefreshRate) {
-                        curRefreshRate = await setRefreshRate(pos[0])
-                    } else if (calc[0] && calc[0] != curRefreshRate) {
-                        curRefreshRate = await setRefreshRate(calc[0])
+                    if (pos[0]) {
+                        if (pos[0] != curRefreshRate) {
+                            curRefreshRate = await setRefreshRate(pos[0])
+                        }
+                    } else if (calc[0]) {
+                        if (calc[0] != curRefreshRate) {
+                            curRefreshRate = await setRefreshRate(calc[0])
+                        }
                     }
                 }
             }
