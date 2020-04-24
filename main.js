@@ -381,6 +381,52 @@
         });
     }
 
+    function registerFreshRate() {
+
+        var protocol = electron.protocol;
+        var customProtocol = 'electronrefreshrate';
+
+        protocol.registerStringProtocol(customProtocol, function (request, callback) {
+
+            // Add 3 to account for ://
+            var url = request.url.substr(customProtocol.length + 3).split('?')[0];
+            var args = []
+            switch (url) {
+                case 'list_possible':
+                    args.push(url)
+                    args.push("\\\\.\\DISPLAY1")
+                    break;
+                case 'current':
+                    args.push(url)
+                    args.push("\\\\.\\DISPLAY1")
+                    break;
+                case 'change':
+                    args.push(url)
+                    args.push("\\\\.\\DISPLAY1")
+                    args.push(request.url.split('=')[1])
+                    break;
+            }
+
+            var { spawn } = require('child_process');
+            var path = require('path');
+
+            var output = ''
+            if (process.platform === 'win32') {
+                var ls = spawn(path.join(__dirname, 'libmpv', process.arch, 'refreshrate.exe'), args);
+                ls.stdout.on('data', (data) => {
+                    output += data.toString()
+                });
+
+                ls.on('close', (data) => {
+                    callback(output)
+                })
+            } else {
+                callback(output)
+            }
+
+        });
+    }
+
     function alert(text) {
         electron.dialog.showMessageBox(mainWindow, {
             message: text.toString(),
@@ -921,6 +967,7 @@
             registerFileSystem();
             registerServerdiscovery();
             registerWakeOnLan();
+            registerFreshRate();
 
             // and load the index.html of the app.
             mainWindow.loadURL(url);

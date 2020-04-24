@@ -16,13 +16,18 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         var currentSrc;
         var playerState = {
-            volume: parseInt(appSettings.get('mpv-volume') || '100')
+            volume: parseInt(appSettings.get('mpv-volume') || '100'),
+            isMuted: false
         };
         var mediaSource;
 
         var videoDialog;
         var libmpv;
         var currentAspectRatio = 'auto';
+
+        var orgRefreshRate;
+        var curRefreshRate;
+        var refreshRates;
 
         self.getRoutes = function () {
 
@@ -314,10 +319,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         function createMediaElement(options) {
 
-            if (options.mediaType !== 'Video') {
-                return Promise.resolve();
-            }
-
             return new Promise(function (resolve, reject) {
 
                 var dlg = document.querySelector('.mpv-videoPlayerContainer');
@@ -332,13 +333,13 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
                         dlg.classList.add('mpv-videoPlayerContainer');
 
-                        if (options.backdropUrl) {
+                        if (options.backdropUrl && options.mediaType === 'Video') {
 
                             dlg.classList.add('mpv-videoPlayerContainer-withBackdrop');
                             dlg.style.backgroundImage = "url('" + options.backdropUrl + "')";
                         }
 
-                        if (options.fullscreen) {
+                        if (options.fullscreen && options.mediaType === 'Video') {
                             dlg.classList.add('mpv-videoPlayerContainer-onTop');
                         }
 
@@ -354,8 +355,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                         libmpv = embed
 
                         addEventListener('ready', () => {
-                            observeProperty(['pause', 'time-pos', 'duration', 'volume', 'mute', 'eof-reached', 'demuxer-cache-state', 'demuxer-cache-time'])
-                            if (options.fullscreen) {
+                            observeProperty(['pause', 'time-pos', 'duration', 'volume', 'mute', 'eof-reached', 'demuxer-cache-state', 'demuxer-cache-time', 'estimated-vf-fps'])
+                            if (options.fullscreen && options.mediaType === 'Video') {
                                 zoomIn(dlg).then(resolve);
                             } else {
                                 resolve();
@@ -366,7 +367,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
                 } else {
 
-                    if (options.backdropUrl) {
+                    if (options.backdropUrl && options.mediaType === 'Video') {
 
                         dlg.classList.add('mpv-videoPlayerContainer-withBackdrop');
                         dlg.style.backgroundImage = "url('" + options.backdropUrl + "')";
@@ -391,37 +392,32 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     case 'time-pos':
                         self._onTimeUpdate(toTicks(recv.data.data.value))
                         break
-
                     case 'pause':
                         self._onPlayPause(recv.data.data.value)
                         break
-
                     case 'duration':
                         self._onDurationUpdate(toTicks(recv.data.data.value))
                         break
-
                     case 'volume':
                         self._onVolumeChange(recv.data.data.value)
                         break
-
                     case 'mute':
                         self._onMute(recv.data.data.value)
                         break
-
                     case 'eof-reached':
                         self._onStopped(recv.data.data.value)
                         break
-
                     case 'demuxer-cache-state':
                         self._onDemuxerCacheStateChanged(recv.data.data.value)
                         break
-
                     case "demuxer-cache-time":
                         self._onDemuxerCacheTimeChanged(recv.data.data.value)
                         break
-
+                    case "estimated-vf-fps":
+                        self._onEstimatedVfFpsChanged(recv.data.data.value)
+                        break
                     default:
-                        //console.log(`${recv.data.data.name}: ${recv.data.data.value}`)
+                        console.log(`${recv.data.data.name}: ${recv.data.data.value}`)
                         dispatchEvent(new CustomEvent(recv.data.data.name, { detail: recv.data.data.value }))
                         break
                 }
@@ -436,7 +432,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             });
         };
 
-        function playInternal(options) {
+        async function playInternal(options) {
 
             var item = options.item;
             mediaSource = options.mediaSource;
@@ -469,7 +465,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             var subtitleAppearanceSettings = userSettings.getSubtitleAppearanceSettings();
             var fontSize;
             switch (subtitleAppearanceSettings.textSize || '') {
-
                 case 'smaller':
                     fontSize = 35;
                     break;
@@ -531,37 +526,36 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 playerOptions["sub-color"] = subtitleAppearanceSettings.textColor
             }
 
-            return setProperty(Object.assign(playerOptions, audioDelay(), interlace(), displaySync(fullscreen), getMpvAudioOptions(mediaType)))
-                .then(() => sendCommand(['loadfile', url]))
-                .then(() => {
-                    if (mediaSource.DefaultAudioStreamIndex && playMethod != 'Transcode') {
-                        return setAudioStream(mediaSource.DefaultAudioStreamIndex);
+
+            await setProperty(Object.assign(playerOptions, audioDelay(), interlace(), getMpvAudioOptions(mediaType)))
+            await sendCommand(['loadfile', url])
+
+            if (mediaSource.DefaultAudioStreamIndex && playMethod != 'Transcode') {
+                await setAudioStream(mediaSource.DefaultAudioStreamIndex);
+            }
+
+            await setSubtitleStream(mediaSource.DefaultSubtitleStreamIndex || -1)
+            await setProperty({
+                start: `${Math.floor(startPositionTicks / 10000000)}`,
+                pause: false
+            })
+
+            await displaySync(fullscreen)
+
+            if (isVideo) {
+                if (fullscreen) {
+                    await embyRouter.showVideoOsd()
+                    onNavigatedToOsd();
+
+                } else {
+                    embyRouter.setTransparency('backdrop');
+
+                    if (videoDialog) {
+                        videoDialog.classList.remove('mpv-videoPlayerContainer-withBackdrop');
+                        videoDialog.classList.remove('mpv-videoPlayerContainer-onTop');
                     }
-                    return Promise.resolve()
-                })
-                .then(() => setSubtitleStream(mediaSource.DefaultSubtitleStreamIndex || -1))
-                .then(() => setProperty({
-                    start: `${Math.floor(startPositionTicks / 10000000)}`,
-                    pause: false
-                }))
-                .then(() => {
-                    if (isVideo) {
-                        if (fullscreen) {
-
-                            embyRouter.showVideoOsd().then(onNavigatedToOsd);
-
-                        } else {
-                            embyRouter.setTransparency('backdrop');
-
-                            if (videoDialog) {
-                                videoDialog.classList.remove('mpv-videoPlayerContainer-withBackdrop');
-                                videoDialog.classList.remove('mpv-videoPlayerContainer-onTop');
-                            }
-                        }
-                    }
-
-                    return Promise.resolve();
-                })
+                }
+            }
         }
 
         // Save this for when playback stops, because querying the time at that point might return 0
@@ -604,8 +598,13 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             return;
         };
 
-        self.stop = function (destroyPlayer) {
-            return destroyPlayer ? destroyInternal() : sendCommand('stop');
+        self.stop = async function (destroyPlayer) {
+            if (destroyPlayer) {
+                await destroyInternal()
+            } else {
+                await sendCommand('stop')
+            }
+            self._onStopped(true)
         };
 
         self.destroy = function () {
@@ -813,16 +812,18 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         };
 
         self._onMute = function (muted) {
-
-            playerState.isMuted = muted;
-            events.trigger(self, 'volumechange');
+            if (playerState.isMuted !== muted) {
+                playerState.isMuted = muted;
+                events.trigger(self, 'volumechange');
+            }
         }
 
         self._onVolumeChange = function (volume) {
-
-            playerState.volume = volume;
-            appSettings.set('mpv-volume', volume);
-            events.trigger(self, 'volumechange');
+            if (volume && playerState.volume !== volume) {
+                playerState.volume = volume;
+                appSettings.set('mpv-volume', volume);
+                events.trigger(self, 'volumechange');
+            }
         };
 
         self._onStopped = function (stopped) {
@@ -833,6 +834,28 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         self._onDemuxerCacheTimeChanged = function (value) {
             playerState["demuxer-cache-time"] = value
+        }
+
+        self._onEstimatedVfFpsChanged = async function (fps) {
+            if (appSettings.get('mpv-displaysync') === 'true' && refreshRates && fps) {
+                if ((window.innerWidth == screen.width) && (screen.height == window.innerHeight)) {
+                    var calc = calcRefreshRate(refreshRates, fps)
+                    var pos = []
+                    if (appSettings.get('mpv-displaysync_override')) {
+                        var prefs = appSettings.get('mpv-displaysync_override').split(';')
+                        for (var pref of prefs) {
+                            if (calc.some((i) => i === pref)) {
+                                pos.push(pref)
+                            }
+                        }
+                    }
+                    if (pos[0] != curRefreshRate) {
+                        curRefreshRate = await setRefreshRate(pos[0])
+                    } else if (calc[0] != curRefreshRate) {
+                        curRefreshRate = await setRefreshRate(calc[0])
+                    }
+                }
+            }
         }
 
         function zoomIn(elem) {
@@ -851,6 +874,10 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
             embyRouter.setTransparency('none');
 
+            if (orgRefreshRate) {
+                setRefreshRate(orgRefreshRate)
+            }
+
             var dlg = videoDialog;
             if (dlg) {
                 videoDialog = null;
@@ -859,20 +886,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             if (libmpv) {
                 libmpv = null
             }
+
             return Promise.resolve()
-        }
-
-        function displaySync(fullscreen) {
-            if (appSettings.get('mpv-displaysync') === 'true') {
-                //rough test for fullscreen on playback start
-                if ((window.innerWidth == screen.width) && (screen.height == window.innerHeight)) {
-                    var rf_rate = ((appSettings.get('mpv-displaysync_override') != '') ? ',refreshrate-rates="' + (appSettings.get('mpv-displaysync_override')) + '"' : '');
-                    var rf_theme = ((fullscreen) ? '' : ',refreshrate-theme=true');
-
-                    return { 'script-opts': 'refreshrate-enabled=true' + rf_rate + rf_theme };
-                }
-            }
-            return {}
         }
 
         function interlace() {
@@ -896,7 +911,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             var audioDelay = framerate >= 23 && framerate <= 25 ? parseInt(appSettings.get('mpv-audiodelay2325') || 0) : parseInt(appSettings.get('mpv-audiodelay') || 0);
 
             return { 'audio-delay': (audioDelay / 1000) };
-
         }
 
         function getMpvAudioOptions(mediaType) {
@@ -967,7 +981,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         function setSubtitleStream(index) {
 
             if (index < 0) {
-                setProperty({ "sid": "no" });
+                return setProperty({ "sid": "no" });
             } else {
                 var subIndex = 0;
                 var i, length, stream;
@@ -978,14 +992,15 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                         subIndex++;
                         if (stream.Index == index) {
                             if (stream.DeliveryMethod == 'External') {
-                                sendCommand(["sub-add", stream.DeliveryUrl, "cached", stream.DisplayTitle, stream.Language]);
+                                return sendCommand(["sub-add", stream.DeliveryUrl, "cached", stream.DisplayTitle, stream.Language]);
                             } else {
-                                setProperty({ "sid": subIndex });
-                                if (stream.Codec == "dvb_teletext") {
-                                    setDvbTeletextPage(stream);
-                                }
+                                return setProperty({ "sid": subIndex }).then(() => {
+                                    if (stream.Codec == "dvb_teletext") {
+                                        return setDvbTeletextPage(stream);
+                                    }
+                                    return Promise.resolve()
+                                })
                             }
-                            return Promise.resolve()
                         }
                     }
                 }
@@ -1008,7 +1023,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 if (pageNumber < 100) {
                     pageNumber += 800;
                 }
-                setProperty({ "teletext-page": pageNumber });
+                return setProperty({ "teletext-page": pageNumber });
             }
             return Promise.resolve()
         }
@@ -1023,11 +1038,10 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 if (stream.Type == 'Audio') {
                     audioIndex++;
                     if (stream.Index == index) {
-                        break;
+                        return setProperty({ "aid": audioIndex });
                     }
                 }
             }
-            setProperty({ "aid": audioIndex });
             return Promise.resolve()
         }
 
@@ -1305,6 +1319,55 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     type: 'media'
                 };
             });
+        }
+
+        async function displaySync(fullscreen) {
+            if (appSettings.get('mpv-displaysync') === 'true') {
+                refreshRates = await getRefreshRateList()
+                orgRefreshRate = await getRefreshRate()
+            }
+        }
+
+        function calcRefreshRate(rates, fps) {
+            return rates.filter((rate) => rate % Math.round(fps) === 0)
+        }
+
+        function getRefreshRateList() {
+            return new Promise((resolve, reject) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'electronrefreshrate://list_possible')
+                xhr.onload = function () {
+                    resolve(this.response.split(';'))
+                }
+                xhr.onerror = reject;
+                xhr.send();
+            })
+        }
+
+        function getRefreshRate() {
+            return new Promise((resolve, reject) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'electronrefreshrate://current')
+                xhr.onload = function () {
+                    var mat = this.response.match(/.*?(\d+)/)
+                    resolve(mat[1])
+                }
+                xhr.onerror = reject;
+                xhr.send();
+            })
+        }
+
+        function setRefreshRate(rate) {
+            return new Promise((resolve, reject) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', `electronrefreshrate://change?rate=${rate}`)
+                xhr.onload = function () {
+                    var mat = this.response.match(/.*?(\d+)/)
+                    resolve(mat[1])
+                }
+                xhr.onerror = reject;
+                xhr.send();
+            })
         }
 
     }
