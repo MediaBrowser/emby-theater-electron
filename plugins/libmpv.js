@@ -819,7 +819,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         }
 
         self._onVolumeChange = function (volume) {
-            if (volume && playerState.volume !== volume) {
+            if (playerState.volume !== volume) {
                 playerState.volume = volume;
                 appSettings.set('mpv-volume', volume);
                 events.trigger(self, 'volumechange');
