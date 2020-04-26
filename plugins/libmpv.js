@@ -631,11 +631,11 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         };
 
         self.volumeUp = function (val) {
-            setProperty({ volume: Math.min(100, val) });
+            setProperty({ volume: Math.min(100, playerState.volume + 2) });
         };
 
         self.volumeDown = function (val) {
-            setProperty({ volume: Math.max(0, val) });
+            setProperty({ volume: Math.max(0, playerState.volume - 2) });
         };
 
         self.volume = function (val) {
