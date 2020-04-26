@@ -28,7 +28,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         var orgRefreshRate;
         var curRefreshRate;
         var refreshRates;
-        var videoFps;
 
         self.getRoutes = function () {
 
@@ -838,7 +837,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         }
 
         self._onEstimatedVfFpsChanged = async function (fps) {
-            videoFps = fps
             if (appSettings.get('mpv-displaysync') === 'true' && refreshRates && fps) {
                 if ((window.innerWidth == screen.width) && (screen.height == window.innerHeight)) {
                     var calc = calcRefreshRate(refreshRates, fps)
@@ -1224,13 +1222,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                             value: value
                         });
                     }
-                }
-
-                if (videoFps) {
-                    stats.push({
-                        label: 'Video fps:',
-                        value: videoFps.toFixed(2)
-                    });
                 }
 
                 if (curRefreshRate) {
