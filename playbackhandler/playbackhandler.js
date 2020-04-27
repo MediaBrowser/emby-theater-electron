@@ -132,21 +132,21 @@ function unmute() {
 
 function video_toggle() {
     var isLinux = require('is-linux');
-    if (isLinux()) {
+    if (isLinux() && mpvPlayer) {
         mpvPlayer.cycleProperty("video");
     }
 }
 
 function show_video() {
     var isLinux = require('is-linux');
-    if (isLinux()) {
+    if (isLinux() && mpvPlayer) {
         mpvPlayer.setProperty("video", 1);
     }
 }
 
 function hide_video() {
     var isLinux = require('is-linux');
-    if (isLinux()) {
+    if (isLinux() && mpvPlayer) {
         mpvPlayer.setProperty("video", "no");
     }
 }

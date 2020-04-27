@@ -30,5 +30,7 @@
   "AudioDelay2325Help": "Audio delay in milliseconds for videos with framerates from 23-25 fps.",
   "EnableExclusiveAudioModeHelp": "Enable exclusive output mode. In this mode, the system is usually locked out, and only Emby will be able to output audio.",
   "DisplayResample": "Display resample.",
-  "DisplayVDrop": "Display video drop."
+  "DisplayVDrop": "Display video drop.",
+  "ConfFile": "Configuration File",
+  "ConfFileHelp": "Configuration file to be parsed."
 }

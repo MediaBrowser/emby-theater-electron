@@ -30,5 +30,7 @@
     "DefaultAudioDelayHelp": "Ritardo audio in millisecondi.",
     "AudioDelay2325": "Ritardo audio (23-25 \u200b\u200bfps):",
     "AudioDelay2325Help": "Ritardo audio in millisecondi per i video con framerate da 23 a 25 fps.",
-    "EnableExclusiveAudioModeHelp": "Abilita la modalit\u00e0 di output esclusiva. In questa modalit\u00e0, il sistema \u00e8 di solito bloccato e solo Emby sar\u00e0 in grado di emettere audio."
+    "EnableExclusiveAudioModeHelp": "Abilita la modalit\u00e0 di output esclusiva. In questa modalit\u00e0, il sistema \u00e8 di solito bloccato e solo Emby sar\u00e0 in grado di emettere audio.",
+    "ConfFile": "File di configurazione",
+    "ConfFileHelp": "File di configurazione da analizzare."
 }

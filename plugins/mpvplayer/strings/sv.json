@@ -30,5 +30,7 @@
     "DefaultAudioDelayHelp": "Ljudf\u00f6rdr\u00f6jning i millisekunder:",
     "AudioDelay2325": "Ljudf\u00f6rdr\u00f6jning (23-25 bilder per sekund):",
     "AudioDelay2325Help": "Ljudf\u00f6rdr\u00f6jning i millisekunder f\u00f6r videor med bildhastigheter p\u00e5 23-25 bilder per sekund.",
-    "EnableExclusiveAudioModeHelp": "Aktivera exklusivt utmatningsl\u00e4ge. I det h\u00e4r l\u00e4get s\u00e5 \u00e4r systemet vanligtvis utel\u00e5st. Enbart Emby kommer att ha m\u00f6jlighet till att mata ut ljud."
+    "EnableExclusiveAudioModeHelp": "Aktivera exklusivt utmatningsl\u00e4ge. I det h\u00e4r l\u00e4get s\u00e5 \u00e4r systemet vanligtvis utel\u00e5st. Enbart Emby kommer att ha m\u00f6jlighet till att mata ut ljud.",
+    "ConfFile": "Konfigurationsfil",
+    "ConfFileHelp": "Konfigurationsfil som ska analyseras."
 }

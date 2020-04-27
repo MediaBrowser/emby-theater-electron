@@ -1,5 +1,7 @@
-﻿<div is="emby-scroller" class="view flex flex-direction-column scrollFrameY flex-grow" data-mousewheel="true" data-horizontal="false" data-centerfocus="card">
-    <div class="scrollSlider flex-grow flex-direction-column padded-left padded-right padded-top-page padded-bottom-page settingsContainer">
+﻿<div is="emby-scroller" class="view flex flex-direction-column scrollFrameY flex-grow" data-mousewheel="true"
+    data-horizontal="false" data-centerfocus="card">
+    <div
+        class="scrollSlider flex-grow flex-direction-column padded-left padded-right padded-top-page padded-bottom-page settingsContainer">
         <form style="margin:0 auto;" class="padded-top">
 
             <div class="selectContainer">
@@ -11,8 +13,6 @@
                     <option value="d3d11va">D3D (Windows 8+)</option>
                     <option value="d3d11va-copy">D3D copy back (Windows 8+)</option>
                     <option value="nvdec-copy">Nvidia NVDEC copy back</option>
-                    <option value="mmal">RPI</option>
-                    <option value="mmal-copy">RPI copy back</option>
                     <option value="unset">Unset (for mpv.conf)</option>
                 </select>
             </div>
@@ -37,7 +37,13 @@
             <h1>${Advanced}</h1>
 
             <div class="inputContainer">
-                <input is="emby-input" type="number" step="1" class="txtDefaultAudioDelay" label="${DefaultAudioDelay}" />
+                <input is="emby-input" type="text" step="1" class="txtConfFile" label="${ConfFile}" />
+                <div class="fieldDescription">${ConfFileHelp}</div>
+            </div>
+
+            <div class="inputContainer">
+                <input is="emby-input" type="number" step="1" class="txtDefaultAudioDelay"
+                    label="${DefaultAudioDelay}" />
                 <div class="fieldDescription">${DefaultAudioDelayHelp}</div>
             </div>
 

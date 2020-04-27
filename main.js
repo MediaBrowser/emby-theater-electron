@@ -4,6 +4,7 @@
     var app = electron.app;  // Module to control application life.
     var BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
     var BrowserView = electron.BrowserView;  // Module to create native browser window.
+    var powerSaveBlocker = electron.powerSaveBlocker
 
     // Keep a global reference of the window object, if you don't, the window will
     // be closed automatically when the JavaScript object is garbage collected.
@@ -15,6 +16,7 @@
     var initialShowEventsComplete = false;
     var previousBounds;
     var cecProcess;
+    var displaySleep;
 
     // Quit when all windows are closed.
     app.on('window-all-closed', function () {
@@ -228,10 +230,14 @@
                     closeProcess(require('querystring').parse(parts[1]).id, callback);
                     return;
                 case 'video-on':
-                    mainWindow.resizable = false;
+                    displaySleep = powerSaveBlocker.start('prevent-display-sleep')
+                    //mainWindow.resizable = false;
                     break;
                 case 'video-off':
-                    mainWindow.resizable = true;
+                    if (displaySleep) {
+                        powerSaveBlocker.stop(displaySleep)
+                    }
+                    //mainWindow.resizable = true;
                     break;
                 case 'loaded':
 
@@ -378,6 +384,52 @@
                     callback("");
                     break;
             }
+        });
+    }
+
+    function registerFreshRate() {
+
+        var protocol = electron.protocol;
+        var customProtocol = 'electronrefreshrate';
+
+        protocol.registerStringProtocol(customProtocol, function (request, callback) {
+
+            // Add 3 to account for ://
+            var url = request.url.substr(customProtocol.length + 3).split('?')[0];
+            var args = []
+            switch (url) {
+                case 'list_possible':
+                    args.push(url)
+                    args.push("\\\\.\\DISPLAY1")
+                    break;
+                case 'current':
+                    args.push(url)
+                    args.push("\\\\.\\DISPLAY1")
+                    break;
+                case 'change':
+                    args.push(url)
+                    args.push("\\\\.\\DISPLAY1")
+                    args.push(request.url.split('=')[1])
+                    break;
+            }
+
+            var { spawn } = require('child_process');
+            var path = require('path');
+
+            var output = ''
+            if (process.platform === 'win32') {
+                var ls = spawn(path.join(__dirname, 'libmpv', process.arch, 'refreshrate.exe'), args);
+                ls.stdout.on('data', (data) => {
+                    output += data.toString()
+                });
+
+                ls.on('close', (data) => {
+                    callback(output)
+                })
+            } else {
+                callback(output)
+            }
+
         });
     }
 
@@ -637,10 +689,14 @@
     function setCommandLineSwitches() {
 
         var isLinux = require('is-linux');
+        var path = require('path')
+        app.commandLine.appendSwitch("ignore-gpu-blacklist");
+        app.commandLine.appendSwitch("register-pepper-plugins", getPluginEntry(path.join(__dirname, 'libmpv', process.arch)));
+        app.commandLine.appendSwitch('no-sandbox');
 
         if (isLinux()) {
             app.commandLine.appendSwitch('enable-transparent-visuals');
-            app.disableHardwareAcceleration();
+            //app.disableHardwareAcceleration();
         }
 
         else if (process.platform === 'win32') {
@@ -649,6 +705,42 @@
             app.commandLine.appendSwitch('high-dpi-support', 'true');
             app.commandLine.appendSwitch('force-device-scale-factor', '1');
         }
+    }
+
+    function getPluginEntry(pluginDir, pluginName = `mpv-${process.platform}-${process.arch}.node`) {
+        var path = require('path')
+        const fullPluginPath = path.join(pluginDir, pluginName);
+        // Try relative path to workaround ASCII-only path restriction.
+        let pluginPath = path.relative(process.cwd(), fullPluginPath);
+        if (path.dirname(pluginPath) === ".") {
+            // "./plugin" is required only on Linux.
+            if (process.platform === "linux") {
+                pluginPath = `.${path.sep}${pluginPath}`;
+            }
+        } else {
+            // Relative plugin paths doesn't work reliably on Windows, see
+            // <https://github.com/Kagami/mpv.js/issues/9>.
+            if (process.platform === "win32") {
+                pluginPath = fullPluginPath;
+            }
+        }
+        if (containsNonASCII(pluginPath)) {
+            if (containsNonASCII(fullPluginPath)) {
+                throw new Error("Non-ASCII plugin path is not supported");
+            } else {
+                pluginPath = fullPluginPath;
+            }
+        }
+        return `${pluginPath};application/x-mpvjs`;
+    }
+
+    function containsNonASCII(str) {
+        for (let i = 0; i < str.length; i++) {
+            if (str.charCodeAt(i) > 255) {
+                return true;
+            }
+        }
+        return false;
     }
 
     function supportsTransparentWindow() {
@@ -833,7 +925,7 @@
                 webgl: false,
                 nodeIntegration: false,
                 nodeIntegrationInWorker: false,
-                plugins: false,
+                plugins: true,
                 webaudio: true,
                 java: false,
                 allowDisplayingInsecureContent: true,
@@ -881,6 +973,7 @@
             registerFileSystem();
             registerServerdiscovery();
             registerWakeOnLan();
+            registerFreshRate();
 
             // and load the index.html of the app.
             mainWindow.loadURL(url);
