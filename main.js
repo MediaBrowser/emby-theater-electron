@@ -4,6 +4,7 @@
     var app = electron.app;  // Module to control application life.
     var BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
     var BrowserView = electron.BrowserView;  // Module to create native browser window.
+    var powerSaveBlocker = electron.powerSaveBlocker
 
     // Keep a global reference of the window object, if you don't, the window will
     // be closed automatically when the JavaScript object is garbage collected.
@@ -15,6 +16,7 @@
     var initialShowEventsComplete = false;
     var previousBounds;
     var cecProcess;
+    var displaySleep;
 
     // Quit when all windows are closed.
     app.on('window-all-closed', function () {
@@ -228,9 +230,13 @@
                     closeProcess(require('querystring').parse(parts[1]).id, callback);
                     return;
                 case 'video-on':
+                    displaySleep = powerSaveBlocker.start('prevent-display-sleep')
                     //mainWindow.resizable = false;
                     break;
                 case 'video-off':
+                    if (displaySleep) {
+                        powerSaveBlocker.stop(displaySleep)
+                    }
                     //mainWindow.resizable = true;
                     break;
                 case 'loaded':
