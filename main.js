@@ -804,14 +804,6 @@
         result.cecExePath = commandLineArguments[index] || 'cec-client';
         index++;
 
-        var mpvPathRpi = path.join(__dirname, 'bin', 'mpv');
-        if (isRpi() && fs.existsSync(mpvPathRpi)) {
-            result.mpvPath = mpvPathRpi;
-        } else {
-            result.mpvPath = commandLineArguments[index];
-        }
-        index++;
-
         return result;
     }
 
@@ -868,14 +860,6 @@
         var longVal = Long.fromString(handle.toString('hex'), unsigned = true, radix = 16);
 
         return longVal.toString();
-    }
-
-    function initPlaybackHandler(mpvPath) {
-
-        var playbackhandler = require('./playbackhandler/playbackhandler');
-        playbackhandler.initialize(getWindowId(mainWindow), mpvPath);
-        playbackhandler.registerMediaPlayerProtocol(electron.protocol, mainWindow);
-        playbackhandler.setNotifyWebViewFn(sendJavascript);
     }
 
     setCommandLineSwitches();
@@ -994,8 +978,6 @@
             mainWindow.show();
 
             initCec();
-
-            //initPlaybackHandler(commandLineOptions.mpvPath);
         });
     });
 })();
