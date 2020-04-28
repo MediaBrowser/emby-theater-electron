@@ -995,7 +995,7 @@
 
             initCec();
 
-            initPlaybackHandler(commandLineOptions.mpvPath);
+            //initPlaybackHandler(commandLineOptions.mpvPath);
         });
     });
 })();
