@@ -433,6 +433,34 @@
         });
     }
 
+    function registerConfig() {
+
+        var protocol = electron.protocol;
+        var customProtocol = 'electronconfig';
+
+        protocol.registerStringProtocol(customProtocol, function (request, callback) {
+
+            var fs = require('fs')
+            // Add 3 to account for ://
+            var url = request.url.substr(customProtocol.length + 3).split('?')[0];
+            if (url === 'config') {
+                var config
+                if (process.platform === 'win32') {
+                    config = `${process.env.APPDATA}\\mpv\\mpv.conf`
+                } else if (process.platform === 'linux') {
+                    config = "~/.config/mpv/mpv.conf"
+                }
+                if (config && fs.existsSync(config)) {
+                    callback(config)
+                } else {
+                    callback("")
+                }
+            } else {
+                callback("")
+            }
+        });
+    }
+
     function alert(text) {
         electron.dialog.showMessageBox(mainWindow, {
             message: text.toString(),
@@ -958,6 +986,7 @@
             registerServerdiscovery();
             registerWakeOnLan();
             registerFreshRate();
+            registerConfig();
 
             // and load the index.html of the app.
             mainWindow.loadURL(url);
