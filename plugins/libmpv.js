@@ -490,8 +490,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 "audio-display": 'no'
             }
 
-            if (appSettings.get('mpv-conf')) {
-                playerOptions["include"] = appSettings.get('mpv-conf')
+            var config = await getConfig()
+            if (config) {
+                playerOptions["include"] = config
             }
 
             if (appSettings.get('mpv-outputlevels')) {
@@ -1385,6 +1386,18 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     } else {
                         resolve()
                     }
+                }
+                xhr.onerror = reject;
+                xhr.send();
+            })
+        }
+
+        function getConfig() {
+            return new Promise((resolve, reject) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'electronconfig://config')
+                xhr.onload = function () {
+                    resolve(this.response)
                 }
                 xhr.onerror = reject;
                 xhr.send();
