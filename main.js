@@ -461,6 +461,30 @@
         });
     }
 
+    function registerCec() {
+
+        var protocol = electron.protocol;
+        var customProtocol = 'electroncec';
+
+        protocol.registerStringProtocol(customProtocol, function (request, callback) {
+
+            // Add 3 to account for ://
+            var url = request.url.substr(customProtocol.length + 3).split('?')[0];
+
+            switch (url) {
+
+                case 'start':
+                    var hdmiPort = request.url.split('=')[1]
+                    initCec(hdmiPort);
+                    callback("");
+                    break;
+                default:
+                    callback("");
+                    break;
+            }
+        });
+    }
+
     function alert(text) {
         electron.dialog.showMessageBox(mainWindow, {
             message: text.toString(),
@@ -848,7 +872,7 @@
     }
 
     /* CEC Module */
-    function initCec() {
+    function initCec(cecHdmiPort) {
 
         try {
             const cec = require('./cec/cec');
@@ -858,7 +882,8 @@
             var cecEmitter = new EventEmitter();
             var cecOpts = {
                 cecExePath: cecExePath,
-                cecEmitter: cecEmitter
+                cecEmitter: cecEmitter,
+                cecHdmiPort: cecHdmiPort
             };
             cecProcess = cec.init(cecOpts);
 
@@ -987,6 +1012,7 @@
             registerWakeOnLan();
             registerFreshRate();
             registerConfig();
+            registerCec();
 
             // and load the index.html of the app.
             mainWindow.loadURL(url);
@@ -1006,7 +1032,6 @@
 
             mainWindow.show();
 
-            initCec();
         });
     });
 })();
