@@ -29,7 +29,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         function startClient() {
             return new Promise((resolve, reject) => {
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', `electroncec://start?hdmiport=${appSettings.get('cec-hdmiport') || 1}`)
+                xhr.open('POST', `electroncec://start?hdmiport=${appSettings.get('cec-hdmiport')}`)
                 xhr.onload = function () {
                     resolve(this.response)
                 }

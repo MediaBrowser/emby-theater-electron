@@ -32,15 +32,18 @@ function init(args) {
     cecEmitter = args.cecEmitter;
     // testEventEmitter();
 
+    var opts = [
+        "-t", "r",              // default device is recorder
+        "-d", "15",
+        "-o", "EmbyTheater"
+    ]
+
+    if (args.cecHdmiPort) {
+        opts.push('-p', args.cecHdmiPort)
+    }
+
     // spawn the cec-client
-    cecProcess = child_process.spawn(cecExePath,
-        [
-            "-t", "r",              // default device is recorder
-            "-d", "15",
-            "-o", "EmbyTheater",
-            "-p", args.cecHdmiPort || 1
-        ]
-    );
+    cecProcess = child_process.spawn(cecExePath, opts);
     // if cec-client is not installed, then we run the app normally
     cecProcess.on("error", function (err) {
         console.log("ERROR: cec-client not installed, running without cec functionality.\n");
