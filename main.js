@@ -448,7 +448,7 @@
                 if (process.platform === 'win32') {
                     config = `${process.env.APPDATA}\\mpv\\mpv.conf`
                 } else if (process.platform === 'linux') {
-                    config = "~/.config/mpv/mpv.conf"
+                    config = `${process.env.HOME}/.config/mpv/mpv.conf`
                 }
                 if (config && fs.existsSync(config)) {
                     callback(config)
