@@ -354,8 +354,14 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                         dlg.insertBefore(embed, dlg.firstChild);
                         libmpv = embed
 
-                        addEventListener('ready', () => {
-                            observeProperty(['pause', 'time-pos', 'duration', 'volume', 'mute', 'eof-reached', 'demuxer-cache-state', 'demuxer-cache-time', 'estimated-vf-fps'])
+                        addEventListener('ready', async () => {
+                            await observeProperty(['pause', 'time-pos', 'duration', 'volume', 'mute', 'eof-reached', 'demuxer-cache-state', 'demuxer-cache-time', 'estimated-vf-fps'])
+                            var scripts = await getScripts()
+                            if (scripts) {
+                                scripts.forEach(async (script) => {
+                                    await sendCommand(['load-script', script])
+                                })
+                            }
                             if (options.fullscreen && options.mediaType === 'Video') {
                                 zoomIn(dlg).then(resolve);
                             } else {
@@ -1398,6 +1404,18 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 xhr.open('POST', 'electronconfig://config')
                 xhr.onload = function () {
                     resolve(this.response)
+                }
+                xhr.onerror = reject;
+                xhr.send();
+            })
+        }
+
+        function getScripts() {
+            return new Promise((resolve, reject) => {
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'electronconfig://scripts')
+                xhr.onload = function () {
+                    resolve(JSON.parse(this.response))
                 }
                 xhr.onerror = reject;
                 xhr.send();
