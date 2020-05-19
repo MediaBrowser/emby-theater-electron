@@ -16,7 +16,7 @@
     var initialShowEventsComplete = false;
     var previousBounds;
     var cecProcess;
-    var displaySleep;
+    var sleepLock = 0;
 
     // Quit when all windows are closed.
     app.on('window-all-closed', function () {
@@ -230,14 +230,22 @@
                     closeProcess(require('querystring').parse(parts[1]).id, callback);
                     return;
                 case 'video-on':
-                    displaySleep = powerSaveBlocker.start('prevent-display-sleep')
+                    sleepLock = powerSaveBlocker.start('prevent-display-sleep')
                     //mainWindow.resizable = false;
                     break;
                 case 'video-off':
-                    if (displaySleep) {
-                        powerSaveBlocker.stop(displaySleep)
+                    if (powerSaveBlocker.isStarted(sleepLock)) {
+                        powerSaveBlocker.stop(sleepLock)
                     }
                     //mainWindow.resizable = true;
+                    break;
+                case 'audio-on':
+                    sleepLock = powerSaveBlocker.start('prevent-app-suspension')
+                    break;
+                case 'audio-off':
+                    if (powerSaveBlocker.isStarted(sleepLock)) {
+                        powerSaveBlocker.stop(sleepLock)
+                    }
                     break;
                 case 'loaded':
 

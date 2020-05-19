@@ -2,12 +2,19 @@ require(['playbackManager', 'events'], function (playbackManager, events) {
     'use strict';
 
     var videoOn;
+    var audioOn;
 
     events.on(playbackManager, "playbackstart", function (e, player) {
         if (playbackManager.isPlayingVideo()) {
             videoOn = true;
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "electronapphost://video-on", true);
+            xhr.send();
+        }
+        if (playbackManager.isPlayingAudio()) {
+            audioOn = true;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "electronapphost://audio-on", true);
             xhr.send();
         }
     });
@@ -17,6 +24,12 @@ require(['playbackManager', 'events'], function (playbackManager, events) {
             videoOn = false;
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "electronapphost://video-off", true);
+            xhr.send();
+        }
+        if (audioOn) {
+            audioOn = false;
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "electronapphost://audio-off", true);
             xhr.send();
         }
     });
