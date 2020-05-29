@@ -487,7 +487,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             var playerOptions = {
                 "hwdec": appSettings.get('mpv-hwdec') || "auto",
                 "volume": playerState.volume,
-                "audio-display": 'no'
+                "audio-display": 'no',
+                "wid": window.PlayerWindowId
             }
 
             if (appSettings.get('mpv-outputlevels')) {
