@@ -441,54 +441,6 @@
         });
     }
 
-    function registerConfig() {
-
-        var protocol = electron.protocol;
-        var customProtocol = 'electronconfig';
-
-        protocol.registerStringProtocol(customProtocol, function (request, callback) {
-
-            var path = require('path')
-            var fs = require('fs')
-            // Add 3 to account for ://
-            var url = request.url.substr(customProtocol.length + 3).split('?')[0];
-            if (url === 'config') {
-                var config
-                if (process.platform === 'win32') {
-                    config = `${process.env.APPDATA}\\mpv\\mpv.conf`
-                } else if (process.platform === 'linux') {
-                    config = `${process.env.HOME}/.config/mpv/mpv.conf`
-                }
-                if (config && fs.existsSync(config)) {
-                    callback(config)
-                } else {
-                    callback("")
-                }
-            } else if (url === 'scripts') {
-                var scriptsDir
-                if (process.platform === 'win32') {
-                    scriptsDir = `${process.env.APPDATA}\\mpv\\scripts`
-                } else if (process.platform === 'linux') {
-                    scriptsDir = `${process.env.HOME}/.config/mpv/scripts`
-                }
-                if (scriptsDir && fs.existsSync(scriptsDir)) {
-                    var scripts = fs.readdirSync(scriptsDir)
-                        .filter((i) => {
-                            return i.indexOf('.lua') != -1 || i.indexOf('.js') != -1
-                        })
-                        .map((i) => {
-                            return path.join(scriptsDir, i)
-                        })
-                    callback(JSON.stringify(scripts))
-                } else {
-                    callback(JSON.stringify([]))
-                }
-            } else {
-                callback("")
-            }
-        });
-    }
-
     function registerCec() {
 
         var protocol = electron.protocol;
@@ -1039,7 +991,6 @@
             registerServerdiscovery();
             registerWakeOnLan();
             registerFreshRate();
-            registerConfig();
             registerCec();
 
             // and load the index.html of the app.

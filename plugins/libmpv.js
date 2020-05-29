@@ -356,12 +356,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
                         addEventListener('ready', async () => {
                             await observeProperty(['pause', 'time-pos', 'duration', 'volume', 'mute', 'eof-reached', 'demuxer-cache-state', 'demuxer-cache-time', 'estimated-vf-fps'])
-                            var scripts = await getScripts()
-                            if (scripts) {
-                                scripts.forEach(async (script) => {
-                                    await sendCommand(['load-script', script])
-                                })
-                            }
                             if (options.fullscreen && options.mediaType === 'Video') {
                                 zoomIn(dlg).then(resolve);
                             } else {
@@ -494,11 +488,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 "hwdec": appSettings.get('mpv-hwdec') || "auto",
                 "volume": playerState.volume,
                 "audio-display": 'no'
-            }
-
-            var config = await getConfig()
-            if (config) {
-                playerOptions["include"] = config
             }
 
             if (appSettings.get('mpv-outputlevels')) {
@@ -1392,30 +1381,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     } else {
                         resolve()
                     }
-                }
-                xhr.onerror = reject;
-                xhr.send();
-            })
-        }
-
-        function getConfig() {
-            return new Promise((resolve, reject) => {
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'electronconfig://config')
-                xhr.onload = function () {
-                    resolve(this.response)
-                }
-                xhr.onerror = reject;
-                xhr.send();
-            })
-        }
-
-        function getScripts() {
-            return new Promise((resolve, reject) => {
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'electronconfig://scripts')
-                xhr.onload = function () {
-                    resolve(JSON.parse(this.response))
                 }
                 xhr.onerror = reject;
                 xhr.send();

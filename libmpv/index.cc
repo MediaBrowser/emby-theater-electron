@@ -326,12 +326,7 @@ class MPVInstance : public pp::Instance {
     if (!mpv_)
       DIE("context init failed");
 
-    char* terminal = getenv("MPVJS_TERMINAL");
-    if (terminal && strlen(terminal))
-      mpv_set_option_string(mpv_, "terminal", "yes");
-    char* verbose = getenv("MPVJS_VERBOSE");
-    if (verbose && strlen(verbose))
-      mpv_set_option_string(mpv_, "msg-level", "all=v");
+    mpv_set_option_string(mpv_, "config", "yes");
 
     if (mpv_initialize(mpv_) < 0)
       DIE("mpv init failed");
@@ -347,10 +342,6 @@ class MPVInstance : public pp::Instance {
 
     if (mpv_render_context_create(&mpv_gl_, mpv_, params) < 0)
       DIE("failed to initialize mpv GL context");
-
-    // Some convenient defaults. Can be always changed on ready event.
-    mpv_set_option_string(mpv_, "keep-open", "yes");
-    mpv_set_option_string(mpv_, "osc", "no");
 
     return true;
   }
