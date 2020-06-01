@@ -492,7 +492,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 "hwdec": appSettings.get('mpv-hwdec') || "auto",
                 "volume": playerState.volume,
                 "audio-display": 'no',
-                "wid": window.PlayerWindowId
+                "wid": window.PlayerWindowId,
+                "keep-open": 'yes'
             }
 
             if (appSettings.get('mpv-vo')) {
