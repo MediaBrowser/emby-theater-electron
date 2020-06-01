@@ -27,6 +27,7 @@
 
         function saveSettings() {
 
+            appSettings.set('mpv-vo', view.querySelector('.selectVideoOut').value);
             appSettings.set('mpv-hwdec', view.querySelector('.selectHwaMode').value);
             appSettings.set('mpv-outputlevels', view.querySelector('.selectNominalRange').value);
             appSettings.set('mpv-displaysync', view.querySelector('.chkRefreshRateMode').checked);
@@ -44,6 +45,7 @@
 
         function renderSettings() {
 
+            view.querySelector('.selectVideoOut').value = appSettings.get('mpv-vo') || '';
             view.querySelector('.selectHwaMode').value = appSettings.get('mpv-hwdec') || '';
             view.querySelector('.selectNominalRange').value = appSettings.get('mpv-outputlevels') || '';
             view.querySelector('.chkRefreshRateMode').checked = appSettings.get('mpv-displaysync') === 'true';

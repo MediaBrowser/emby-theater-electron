@@ -343,6 +343,10 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                             dlg.classList.add('mpv-videoPlayerContainer-onTop');
                         }
 
+                        if (appSettings.get('mpv-vo') && appSettings.get('mpv-vo') !== 'libmpv') {
+                            dlg.style.opacity = 0
+                        }
+
                         document.body.insertBefore(dlg, document.body.firstChild);
                         videoDialog = dlg;
 
@@ -489,6 +493,10 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 "volume": playerState.volume,
                 "audio-display": 'no',
                 "wid": window.PlayerWindowId
+            }
+
+            if (appSettings.get('mpv-vo')) {
+                playerOptions["vo"] = appSettings.get('mpv-vo')
             }
 
             if (appSettings.get('mpv-outputlevels')) {
