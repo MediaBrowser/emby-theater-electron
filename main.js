@@ -273,6 +273,7 @@
         //});
 
         sendJavascript('window.PlayerWindowId="' + getWindowId(mainWindow) + '";');
+        sendJavascript(`window.platform="${process.platform}";`);
     }
 
     var processes = {};

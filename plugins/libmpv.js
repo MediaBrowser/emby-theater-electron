@@ -343,7 +343,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                             dlg.classList.add('mpv-videoPlayerContainer-onTop');
                         }
 
-                        if (appSettings.get('mpv-vo') && appSettings.get('mpv-vo') !== 'libmpv') {
+                        if (appSettings.get('mpv-vo') && appSettings.get('mpv-vo') !== 'libmpv' && window.platform === 'win32') {
                             dlg.style.opacity = 0
                         }
 
@@ -496,7 +496,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 "keep-open": 'yes'
             }
 
-            if (appSettings.get('mpv-vo')) {
+            if (appSettings.get('mpv-vo') && window.platform === 'win32') {
                 playerOptions["vo"] = appSettings.get('mpv-vo')
             }
 
