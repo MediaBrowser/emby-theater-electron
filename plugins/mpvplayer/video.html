@@ -5,6 +5,14 @@
         <form style="margin:0 auto;" class="padded-top">
 
             <div class="selectContainer">
+                <select is="emby-select" class="selectVideoOut" label="Video Output:">
+                    <option value="">${Auto}</option>
+                    <option value="libmpv">libmpv</option>
+                    <option value="gpu">gpu</option>
+                </select>
+            </div>
+
+            <div class="selectContainer">
                 <select is="emby-select" class="selectHwaMode" label="${LabelHardwareAccelerationMode}">
                     <option value="">${Auto}</option>
                     <option value="auto-copy">Auto (copy back)</option>

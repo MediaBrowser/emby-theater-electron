@@ -15,10 +15,6 @@
     padding: 0 !important;
 }
 
-.mpv-videoPlayerContainer:not(.mpv-videoPlayerContainer-withBackdrop):not(.mpv-videoPlayerContainer-onTop) {
-    background: #000 !important;
-}
-
 .mpv-videoPlayerContainer-withBackdrop {
     background-repeat: no-repeat;
     background-position: center center;
