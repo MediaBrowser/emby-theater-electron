@@ -273,6 +273,7 @@
         //});
 
         sendJavascript('window.PlayerWindowId="' + getWindowId(mainWindow) + '";');
+        sendJavascript(`window.platform="${process.platform}";`);
     }
 
     var processes = {};
@@ -813,7 +814,7 @@
             cecProcess.kill();
         }
 
-        //app.quit();
+        app.exit();
     }
 
     function parseCommandLine() {
