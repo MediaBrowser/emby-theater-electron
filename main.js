@@ -814,7 +814,7 @@
             cecProcess.kill();
         }
 
-        //app.quit();
+        app.exit();
     }
 
     function parseCommandLine() {
