@@ -2,17 +2,17 @@
     'use strict';
 
     function fullscreenManager() {
-
+        document.addEventListener("windowstatechanged", () => {
+            events.trigger(this, 'fullscreenchange')
+        })
     }
 
     fullscreenManager.prototype.requestFullscreen = function (element) {
         appHost.setWindowState('Maximized');
-        events.trigger(this, 'fullscreenchange');
     };
 
     fullscreenManager.prototype.exitFullscreen = function () {
         appHost.setWindowState('Normal');
-        events.trigger(this, 'fullscreenchange');
     };
 
     fullscreenManager.prototype.isFullScreen = function () {
