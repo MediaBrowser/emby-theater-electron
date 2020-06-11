@@ -113,6 +113,7 @@
         if (initialShowEventsComplete) {
             mainWindow.focus();
             mainWindow.resizable = false;
+            mainWindow.movable = false;
         }
     }
 
@@ -122,6 +123,7 @@
 
         if (initialShowEventsComplete) {
             mainWindow.resizable = true;
+            mainWindow.movable = true;
         }
     }
 
