@@ -2,14 +2,8 @@
     'use strict';
 
     function fullscreenManager() {
-        document.addEventListener("windowstatechanged", (e) => {
+        document.addEventListener("windowstatechanged", () => {
             events.trigger(this, 'fullscreenchange')
-            var drag = document.querySelector('.windowDragRegion');
-            if (e.detail.windowState == 'Maximized' || e.detail.windowState == 'Fullscreen') {
-                drag.classList.add('nodrag')
-            } else {
-                drag.classList.remove('nodrag')
-            }
         })
     }
 
