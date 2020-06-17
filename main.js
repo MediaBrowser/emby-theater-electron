@@ -111,10 +111,9 @@
         onWindowStateChanged('Fullscreen');
 
         if (initialShowEventsComplete) {
-            //mainWindow.setAlwaysOnTop(true);
             mainWindow.focus();
-            mainWindow.moveable = false;
-            //mainWindow.setResizable(false);
+            mainWindow.resizable = false;
+            mainWindow.movable = false;
         }
     }
 
@@ -123,9 +122,8 @@
         onWindowStateChanged('Normal');
 
         if (initialShowEventsComplete) {
-            //mainWindow.setAlwaysOnTop(false);
+            mainWindow.resizable = true;
             mainWindow.movable = true;
-            //mainWindow.setResizable(true);
         }
     }
 
