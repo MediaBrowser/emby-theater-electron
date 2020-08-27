@@ -92,6 +92,7 @@
         features.push('subtitleappearancesettings');
 
         features.push('displaylanguage');
+        features.push('keyboardsettings');
         //features.push('chromecast');
 
         return features;
