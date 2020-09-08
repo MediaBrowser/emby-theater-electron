@@ -1,12 +1,8 @@
 {
-    "DisplayResample": "Volver a hacer Muestreo de Pantalla",
-    "DisplayVDrop": "Ignorar pantalla de video",
     "LabelOutputRange": "Rango de salida:",
     "LabelHardwareAccelerationMode": "Modo de aceleraci\u00f3n por hardware:",
     "Auto": "Autom\u00e1tico",
     "None": "Ninguno",
-    "ChangeRefreshRate": "Cambiar la taza de actualizaci\u00f3n de la pantalla para que coincida con la del video.",
-    "ChangeRefreshRateHelp": "Cambia la taza de actualizaci\u00f3n de la pantalla principal para que concuerde con la del video reproduci\u00e9ndose actualmente. Supuestamente funciona mejor cuando la Sincronizaci\u00f3n de Video y Pantalla esta activada.",
     "UserRefreshRate": "Tazas de Actualizaci\u00f3n Preferidas",
     "UserRefreshRateHelp": "Agregue Tazas de Actualizaci\u00f3n en el orden de preferencia y separarlos con punto y coma (ejem. 50;60;23)",
     "LabelSpeakerLayout": "Configuraci\u00f3n de Altavoces:",
@@ -30,5 +26,8 @@
     "DefaultAudioDelayHelp": "Retraso de audio en milisegundos.",
     "AudioDelay2325": "Retraso de audio (23-25 fps):",
     "AudioDelay2325Help": "Retraso de audio en milisegundos para videos de 23-25 fps (cuadros por segundo).",
-    "EnableExclusiveAudioModeHelp": "Habilita el modo de salida exclusivo. En este modo, el sistema esta usualmente bloqueado, y solo Emby podr\u00e1 reproducir audio."
+    "EnableExclusiveAudioModeHelp": "Habilita el modo de salida exclusivo. En este modo, el sistema esta usualmente bloqueado, y solo Emby podr\u00e1 reproducir audio.",
+    "DisplayResample": "Volver a hacer Muestreo de Pantalla",
+    "DisplayVDrop": "Ignorar pantalla de video",
+    "LabelVideoOutput": "Video output:"
 }

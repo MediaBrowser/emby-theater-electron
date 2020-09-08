@@ -1,12 +1,8 @@
 {
-    "DisplayResample": "Zobraz p\u0159evzorkovan\u00e9",
-    "DisplayVDrop": "Zobraz zhor\u0161en\u00ed kvality videa",
     "LabelOutputRange": "V\u00fdstupn\u00ed rozsah:",
     "LabelHardwareAccelerationMode": "Re\u017eim hardwarov\u00e9 akcelerace:",
     "Auto": "Auto",
     "None": "\u017d\u00e1dn\u00fd",
-    "ChangeRefreshRate": "Zm\u011bnit obnovovac\u00ed frekvenci displeje, aby odpov\u00eddalo videu",
-    "ChangeRefreshRateHelp": "Zm\u011bn\u00ed obnovovac\u00ed frekvenci prim\u00e1rn\u00edho displeje tak, aby se p\u0159ibl\u00ed\u017eila aktu\u00e1ln\u011b p\u0159ehr\u00e1van\u00e9mu video streamu. \u00dadajn\u011b funguje l\u00e9pe, kdy\u017e je tak\u00e9 povolena funkce Video Display Sync.",
     "UserRefreshRate": "Preferovan\u00e1 rychlost obnovy",
     "UserRefreshRateHelp": "Zadejte preferovan\u00e9 rychlosti se\u0159azen\u00e9 podle preferenc\u00ed, odd\u011blen\u00e9 st\u0159edn\u00edkem (nap\u0159. 50;60;23)",
     "LabelSpeakerLayout": "Rozlo\u017een\u00ed reproduktor\u016f:",
@@ -30,5 +26,8 @@
     "DefaultAudioDelayHelp": "Zpo\u017ed\u011bn\u00ed zvuku v milisekund\u00e1ch.",
     "AudioDelay2325": "Zpo\u017ed\u011bn\u00ed zvuku (23 - 25 fps):",
     "AudioDelay2325Help": "Zpo\u017ed\u011bn\u00ed zvuku v milisekund\u00e1ch pro videa se sn\u00edmkovou frekvenc\u00ed 23-25 \u200b\u200bfps.",
-    "EnableExclusiveAudioModeHelp": "Povolit re\u017eim exkluzivn\u00edho v\u00fdstupu. V tomto re\u017eimu je syst\u00e9m obvykle uzam\u010den a pouze Emby bude schopen generovat v\u00fdstup zvuku."
+    "EnableExclusiveAudioModeHelp": "Povolit re\u017eim exkluzivn\u00edho v\u00fdstupu. V tomto re\u017eimu je syst\u00e9m obvykle uzam\u010den a pouze Emby bude schopen generovat v\u00fdstup zvuku.",
+    "DisplayResample": "Zobraz p\u0159evzorkovan\u00e9",
+    "DisplayVDrop": "Zobraz zhor\u0161en\u00ed kvality videa",
+    "LabelVideoOutput": "Video output:"
 }

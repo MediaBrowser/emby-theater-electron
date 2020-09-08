@@ -1,12 +1,8 @@
 {
-    "DisplayResample": "Display resample.",
-    "DisplayVDrop": "Display video drop.",
     "LabelOutputRange": "Output range:",
     "LabelHardwareAccelerationMode": "Hardware acceleration mode:",
     "Auto": "Autom\u00e1tico",
     "None": "Nenhum",
-    "ChangeRefreshRate": "Mudar a taxa de atualiza\u00e7\u00e3o do monitor para corresponder com o v\u00eddeo",
-    "ChangeRefreshRateHelp": "Changes the primary display refresh rate to closer align with the currently playing video stream. Reportedly works better when Video Display Sync is enabled as well.",
     "UserRefreshRate": "Preferred Refresh Rates",
     "UserRefreshRateHelp": "Add Refresh Rates in the order of preference and separate with semicolon (ex. 50;60;23)",
     "LabelSpeakerLayout": "Speaker layout:",
@@ -20,7 +16,7 @@
     "EnableDeinterlacing": "Enable deinterlacing",
     "EnableOpenGlHq": "Enable OpenGL high quality profile",
     "EnableVideoDisplaySyncing": "Enable video display syncing",
-    "EnableVideoDisplaySyncingHelp": "Resample audio to match the video. This mode will also try to adjust audio speed to compensate for other drift. (This means it will play the audio at a different speed every once in a while to reduce the A\/V difference.)",
+    "EnableVideoDisplaySyncingHelp": "Resample audio to match the video. VDrop will drop video frames to compensate for drift.",
     "EnableInterpolation": "Enable interpolation",
     "EnableInterpolationHelp": "Reduce stuttering caused by mismatches in the video fps and display refresh rate (also known as judder).",
     "EnableExclusiveAudioMode": "Enable exclusive audio mode",
@@ -30,5 +26,8 @@
     "DefaultAudioDelayHelp": "Audio delay in milliseconds.",
     "AudioDelay2325": "Audio delay (23-25 fps):",
     "AudioDelay2325Help": "Audio delay in milliseconds for videos with framerates from 23-25 fps.",
-    "EnableExclusiveAudioModeHelp": "Enable exclusive output mode. In this mode, the system is usually locked out, and only Emby will be able to output audio."
+    "EnableExclusiveAudioModeHelp": "Enable exclusive output mode. In this mode, the system is usually locked out, and only Emby will be able to output audio.",
+    "DisplayResample": "Display resample.",
+    "DisplayVDrop": "Display video drop.",
+    "LabelVideoOutput": "Video output:"
 }

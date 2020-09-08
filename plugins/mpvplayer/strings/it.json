@@ -1,12 +1,8 @@
 {
-    "DisplayResample": "Display resample.",
-    "DisplayVDrop": "Display video drop.",
     "LabelOutputRange": "Gamma output:",
     "LabelHardwareAccelerationMode": "Accelerazione Hardware:",
     "Auto": "Auto",
     "None": "Nessuno",
-    "ChangeRefreshRate": "Modifica frequenza di refresh del display in base al video",
-    "ChangeRefreshRateHelp": "Cambia la frequenza di aggiornamento del display principale per renderla pi\u00f9 simile al flusso video attualmente in riproduzione. Funziona al meglio quando \u00e8 abilitato anche Video Display Sync.",
     "UserRefreshRate": "Frequenze di aggiornamento preferite",
     "UserRefreshRateHelp": "Aggiungi frequenze di aggiornamento nell'ordine di preferenza e separa con punto e virgola (ad esempio 50; 60; 23)",
     "LabelSpeakerLayout": "Layout Speaker:",
@@ -30,5 +26,8 @@
     "DefaultAudioDelayHelp": "Ritardo audio in millisecondi.",
     "AudioDelay2325": "Ritardo audio (23-25 \u200b\u200bfps):",
     "AudioDelay2325Help": "Ritardo audio in millisecondi per i video con framerate da 23 a 25 fps.",
-    "EnableExclusiveAudioModeHelp": "Abilita la modalit\u00e0 di output esclusiva. In questa modalit\u00e0, il sistema \u00e8 di solito bloccato e solo Emby sar\u00e0 in grado di emettere audio."
+    "EnableExclusiveAudioModeHelp": "Abilita la modalit\u00e0 di output esclusiva. In questa modalit\u00e0, il sistema \u00e8 di solito bloccato e solo Emby sar\u00e0 in grado di emettere audio.",
+    "DisplayResample": "Display resample.",
+    "DisplayVDrop": "Display video drop.",
+    "LabelVideoOutput": "Video output:"
 }
