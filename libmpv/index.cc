@@ -29,6 +29,7 @@
 
 using pp::Var;
 
+#ifndef _M_IX86
 // Strip GL_EXT_texture_norm16 because it doesn't work but reported as
 // available in Chrome 61-64 (electron 2.x) thus broking e.g. 10-bit
 // videos in mpv.
@@ -48,10 +49,15 @@ const GLubyte* myGetString(GLenum name) {
     return glGetString(name);
   }
 }
+#endif
 
 // PPAPI GLES implementation doesn't provide getProcAddress.
 static const std::unordered_map<std::string, void*> GL_CALLBACKS = {
+#ifdef _M_IX86
+  GLCB(GetString),
+#else
   { "glGetString", reinterpret_cast<void*>(myGetString) },
+#endif
   GLCB(ActiveTexture),
   GLCB(AttachShader),
   GLCB(BindAttribLocation),
