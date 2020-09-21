@@ -5,7 +5,7 @@
         <form style="margin:0 auto;" class="padded-top">
 
             <div class="selectContainer">
-                <select is="emby-select" class="selectVideoOut" label="Video Output:">
+                <select is="emby-select" class="selectVideoOut" label="${LabelVideoOutput}">
                     <option value="">${Auto}</option>
                     <option value="libmpv">libmpv</option>
                     <option value="gpu">gpu</option>
@@ -58,9 +58,9 @@
             <div class="checkboxContainer checkboxContainer-withDescription">
                 <label>
                     <input type="checkbox" is="emby-checkbox" class="chkRefreshRateMode" />
-                    <span>${ChangeRefreshRate}</span>
+                    <span>${EnableDisplayRefreshRateSwitching}</span>
                 </label>
-                <div class="fieldDescription checkboxFieldDescription">${ChangeRefreshRateHelp}</div>
+                <div class="fieldDescription checkboxFieldDescription">${EnableDisplayRefreshRateSwitchingHelp}</div>
             </div>
 
             <div class="inputContainer">

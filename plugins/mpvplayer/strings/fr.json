@@ -1,12 +1,8 @@
 {
-    "DisplayResample": "Afficher le r\u00e9-\u00e9chantillonnage.",
-    "DisplayVDrop": "Afficher les pertes vid\u00e9o.",
     "LabelOutputRange": "Plage de sortie\u00a0:",
     "LabelHardwareAccelerationMode": "Mode d'acc\u00e9l\u00e9ration mat\u00e9rielle\u00a0:",
     "Auto": "Auto",
     "None": "Aucun",
-    "ChangeRefreshRate": "Changer la fr\u00e9quence de rafra\u00eechissement de l'\u00e9cran pour correspondre \u00e0 la vid\u00e9o",
-    "ChangeRefreshRateHelp": "Change la fr\u00e9quence de rafra\u00eechissement de l'\u00e9cran principal pour s'harmoniser avec le flux vid\u00e9o en cours de lecture. Semble mieux fonctionner quand la synchronisation de l'affichage vid\u00e9o est \u00e9galement activ\u00e9e.",
     "UserRefreshRate": "Fr\u00e9quences de rafra\u00eechissement pr\u00e9f\u00e9r\u00e9es",
     "UserRefreshRateHelp": "Ajoutez les fr\u00e9quences de rafra\u00eechissement par ordre de pr\u00e9f\u00e9rence en les s\u00e9parant par un point-virgule (p. ex. 50;60;23)",
     "LabelSpeakerLayout": "Disposition des hauts-parleurs\u00a0:",
@@ -30,5 +26,8 @@
     "DefaultAudioDelayHelp": "D\u00e9lai audio en millisecondes.",
     "AudioDelay2325": "D\u00e9lai audio (23-25 ips) :",
     "AudioDelay2325Help": "D\u00e9lai audio en millisecondes pour les vid\u00e9os avec un d\u00e9bit d'images de 23-25 images par seconde.",
-    "EnableExclusiveAudioModeHelp": "Active le mode de sortie exclusif. Dans ce mode, le syst\u00e8me est g\u00e9n\u00e9ralement bloqu\u00e9, seul Emby pourra utiliser les sorties audio."
+    "EnableExclusiveAudioModeHelp": "Active le mode de sortie exclusif. Dans ce mode, le syst\u00e8me est g\u00e9n\u00e9ralement bloqu\u00e9, seul Emby pourra utiliser les sorties audio.",
+    "DisplayResample": "Afficher le r\u00e9-\u00e9chantillonnage.",
+    "DisplayVDrop": "Afficher les pertes vid\u00e9o.",
+    "LabelVideoOutput": "Video output:"
 }

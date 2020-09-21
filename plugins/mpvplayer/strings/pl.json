@@ -1,12 +1,8 @@
 {
-    "DisplayResample": "Display resample.",
-    "DisplayVDrop": "Display video drop.",
     "LabelOutputRange": "Zakres kolor\u00f3w:",
     "LabelHardwareAccelerationMode": "Tryb akceleracji sprz\u0119towej:",
     "Auto": "Automatycznie",
     "None": "Brak",
-    "ChangeRefreshRate": "Dopasowuj od\u015bwie\u017canie wy\u015bwietlacza do cz\u0119stotliwo\u015bci materia\u0142u wideo",
-    "ChangeRefreshRateHelp": "Umo\u017cliwia dopasowanie cz\u0119stotliwo\u015bci od\u015bwie\u017cania podstawowego wy\u015bwietlacza do cz\u0119stotliwo\u015bci materia\u0142u wideo. Dzia\u0142a lepiej, gdy aktywowano funkcj\u0119 synchronizacji pionowej.",
     "UserRefreshRate": "Preferowane cz\u0119stotliwo\u015bci od\u015bwie\u017cania",
     "UserRefreshRateHelp": "Umo\u017cliwia dodanie cz\u0119stotliwo\u015bci w preferowanej kolejno\u015bci, rozdzielonych \u015brednikiem (np. 50;60;23)",
     "LabelSpeakerLayout": "Uk\u0142ad g\u0142o\u015bnik\u00f3w:",
@@ -30,5 +26,8 @@
     "DefaultAudioDelayHelp": "Okre\u015bla op\u00f3\u017anienie d\u017awi\u0119ku w stosunku do obrazu w milisekundach.",
     "AudioDelay2325": "Op\u00f3\u017anienie d\u017awi\u0119ku (23-25 klatek)",
     "AudioDelay2325Help": "Okre\u015bla op\u00f3\u017anienie d\u017awi\u0119ku w milisekundach, w stosunku do obrazu, dla materia\u0142\u00f3w wideo o cz\u0119stotliwo\u015bci klatek 23-25.",
-    "EnableExclusiveAudioModeHelp": "Umo\u017cliwia dost\u0119p do urz\u0105dzenia d\u017awi\u0119kowego w trybie wy\u0142\u0105czno\u015bci. W tym trybie, podsystem d\u017awi\u0119kowy jest zablokowany, tylko Emby b\u0119dzie mia\u0142o mo\u017cliwo\u015b\u0107 odtwarzania d\u017awi\u0119k\u00f3w."
+    "EnableExclusiveAudioModeHelp": "Umo\u017cliwia dost\u0119p do urz\u0105dzenia d\u017awi\u0119kowego w trybie wy\u0142\u0105czno\u015bci. W tym trybie, podsystem d\u017awi\u0119kowy jest zablokowany, tylko Emby b\u0119dzie mia\u0142o mo\u017cliwo\u015b\u0107 odtwarzania d\u017awi\u0119k\u00f3w.",
+    "DisplayResample": "Display resample.",
+    "DisplayVDrop": "Display video drop.",
+    "LabelVideoOutput": "Video output:"
 }
