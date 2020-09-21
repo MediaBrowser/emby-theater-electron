@@ -17,7 +17,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         var currentSrc;
         var playerState = {
             volume: parseInt(appSettings.get('mpv-volume') || '100'),
-            isMuted: false
+            isMuted: false,
+            subDelay: 0,
+            playbackRate: 1
         };
         var mediaSource;
 
@@ -359,7 +361,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                         libmpv = embed
 
                         addEventListener('ready', async () => {
-                            await observeProperty(['pause', 'time-pos', 'duration', 'volume', 'mute', 'eof-reached', 'demuxer-cache-state', 'demuxer-cache-time', 'estimated-vf-fps'])
+                            await observeProperty(['pause', 'time-pos', 'duration', 'volume', 'mute', 'eof-reached', 'demuxer-cache-state', 'demuxer-cache-time', 'estimated-vf-fps', 'sub-delay', 'speed'])
                             if (options.fullscreen && options.mediaType === 'Video') {
                                 zoomIn(dlg).then(resolve);
                             } else {
@@ -419,6 +421,12 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                         break
                     case "estimated-vf-fps":
                         self._onEstimatedVfFpsChanged(recv.data.data.value)
+                        break
+                    case "sub-delay":
+                        self._onSubtitleOffsetUpdate(recv.data.data.value)
+                        break
+                    case "speed":
+                        self._onPlaybackRateUpdate(recv.data.data.value)
                         break
                     default:
                         //console.log(`${recv.data.data.name}: ${recv.data.data.value}`)
@@ -493,7 +501,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 "volume": playerState.volume,
                 "audio-display": 'no',
                 "wid": window.PlayerWindowId,
-                "keep-open": 'yes'
+                "keep-open": 'yes',
+                "speed": 1,
+                "sub-delay": 0
             }
 
             if (appSettings.get('mpv-vo') && window.platform === 'win32') {
@@ -710,6 +720,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             var list = [];
 
             list.push('SetAspectRatio');
+            list.push('SetPlaybackRate');
+            list.push('SetSubtitleOffset');
 
             return list;
         }
@@ -868,6 +880,36 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             }
         }
 
+        self._onSubtitleOffsetUpdate = function (value) {
+            playerState.subDelay = value * 1000;
+            events.trigger(self, 'subtitleoffsetchange');
+        };
+
+        self._onPlaybackRateUpdate = function (value) {
+            playerState.playbackRate = value;
+            events.trigger(self, 'playbackratechange');
+        };
+
+        self.setSubtitleOffset = function (value) {
+            setProperty({ "sub-delay": value / 1000});
+        };
+
+        self.incrementSubtitleOffset = function (value) {
+            setProperty({ "sub-delay": (playerState.subDelay + value) / 1000 });
+        };
+
+        self.setPlaybackRate = function (value) {
+            setProperty({ "speed": value });
+        };
+
+        self.getSubtitleOffset = function () {
+            return playerState.subDelay.toFixed();
+        };
+
+        self.getPlaybackRate = function () {
+            return playerState.playbackRate;
+        };
+
         function zoomIn(elem) {
 
             return new Promise(function (resolve, reject) {
@@ -989,7 +1031,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         }
 
         function setSubtitleStream(index) {
-
+            setProperty({ "sub-delay": 0 })
             if (index < 0) {
                 return setProperty({ "sid": "no" });
             } else {
