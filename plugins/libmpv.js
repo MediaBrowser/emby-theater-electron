@@ -497,13 +497,16 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             }
 
             var playerOptions = {
-                "hwdec": appSettings.get('mpv-hwdec') || "auto",
                 "volume": playerState.volume,
                 "audio-display": 'no',
                 "wid": window.PlayerWindowId,
                 "keep-open": 'yes',
                 "speed": 1,
                 "sub-delay": 0
+            }
+            
+            if (appSettings.get('mpv-hwdec') !== "unset") {
+                playerOptions["hwdec"] = appSettings.get('mpv-hwdec') || "auto"
             }
 
             if (appSettings.get('mpv-vo') && window.platform === 'win32') {
