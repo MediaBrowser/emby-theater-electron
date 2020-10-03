@@ -38,6 +38,7 @@
             'runatstartup',
             'filedownload',
             'externallinks',
+            'externalappinfo',
             'sleep',
             //'restart',
             'shutdown'
