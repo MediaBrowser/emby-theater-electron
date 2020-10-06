@@ -464,6 +464,17 @@
         });
     }
 
+    function registerFile() {
+
+        var protocol = electron.protocol;
+
+        protocol.registerFileProtocol('file', function (request, callback) {
+            const pathname = decodeURI(request.url.replace('file:///', ''));
+            const parts = pathname.split('?');
+            callback(parts[0]);
+        });
+    }
+
     function alert(text) {
         electron.dialog.showMessageBox(mainWindow, {
             message: text.toString(),
@@ -991,6 +1002,7 @@
             registerWakeOnLan();
             registerFreshRate();
             registerCec();
+            registerFile();
 
             // and load the index.html of the app.
             mainWindow.loadURL(url);
