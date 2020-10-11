@@ -16,7 +16,7 @@
     "EnableDeinterlacing": "Aktiviere Deinterlacing",
     "EnableOpenGlHq": "Aktiviere OpenGL High Quality Profil",
     "EnableVideoDisplaySyncing": "Aktiviere Video-Display-Synchronisierung",
-    "EnableVideoDisplaySyncingHelp": "Abtastratenwandlung der Tonspur, um sie an das Videobild anzupassen. Dieser Modus versucht zudem, die Tongeschwindigkeit anzupassen. (Das bedeutet, die Tonspur wird ab und an mit einer anderen Geschwindigkeit abgespielt, um die Differenz zum Videobild auszugleichen.)",
+    "EnableVideoDisplaySyncingHelp": "Abtastratenwandlung der Tonspur, um sie an das Videobild anzupassen. VDrop wird Videobilder \"verschlucken\", um Abweichungen auszugleichen.",
     "EnableInterpolation": "Aktiviere Interpolation",
     "EnableInterpolationHelp": "Reduziert Mikroruckler, verursacht durch unterschiedliche Bildwiederholfrequenzen von Video und Bildschirm (auch bekannt als \"Judder\").",
     "EnableExclusiveAudioMode": "Aktiviere exklusiven Audiomodus",
@@ -29,5 +29,5 @@
     "EnableExclusiveAudioModeHelp": "Verwende exklusiven Audioausgabemodus. In diesem Modus ist das System f\u00fcr weitere Audioausgaben gesperrt und nur Emby kann Audio wiedergeben.",
     "DisplayResample": "Display resample.",
     "DisplayVDrop": "Display video drop.",
-    "LabelVideoOutput": "Video output:"
+    "LabelVideoOutput": "Videoausgabe"
 }

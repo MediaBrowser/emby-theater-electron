@@ -94,6 +94,26 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             });
 
             files.push({
+                lang: 'es',
+                path: pluginManager.mapPath(self, 'mpvplayer/strings/es.json')
+            });
+
+            files.push({
+                lang: 'es-MX',
+                path: pluginManager.mapPath(self, 'mpvplayer/strings/es-MX.json')
+            });
+
+            files.push({
+                lang: 'fa',
+                path: pluginManager.mapPath(self, 'mpvplayer/strings/fa.json')
+            });
+
+            files.push({
+                lang: 'fi',
+                path: pluginManager.mapPath(self, 'mpvplayer/strings/fi.json')
+            });
+
+            files.push({
                 lang: 'fr',
                 path: pluginManager.mapPath(self, 'mpvplayer/strings/fr.json')
             });
