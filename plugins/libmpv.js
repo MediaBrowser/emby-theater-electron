@@ -365,10 +365,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                             dlg.classList.add('mpv-videoPlayerContainer-onTop');
                         }
 
-                        if (appSettings.get('mpv-vo') && appSettings.get('mpv-vo') !== 'libmpv' && window.platform === 'win32') {
-                            dlg.style.opacity = 0
-                        }
-
                         document.body.insertBefore(dlg, document.body.firstChild);
                         videoDialog = dlg;
 
@@ -376,12 +372,13 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                         embed.type = 'application/x-mpvjs';
                         embed.classList.add('mpv-videoPlayer')
                         embed.addEventListener('message', message)
+                        embed.style.opacity = 0
 
                         dlg.insertBefore(embed, dlg.firstChild);
                         libmpv = embed
 
                         addEventListener('ready', async () => {
-                            await observeProperty(['pause', 'time-pos', 'duration', 'volume', 'mute', 'eof-reached', 'demuxer-cache-state', 'demuxer-cache-time', 'estimated-vf-fps', 'sub-delay', 'speed'])
+                            await observeProperty(['pause', 'time-pos', 'duration', 'volume', 'mute', 'eof-reached', 'demuxer-cache-state', 'demuxer-cache-time', 'estimated-vf-fps', 'sub-delay', 'speed', 'core-idle'])
                             if (options.fullscreen && options.mediaType === 'Video') {
                                 zoomIn(dlg).then(resolve);
                             } else {
@@ -393,6 +390,10 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
                 } else {
 
+                    if (libmpv) {
+                        libmpv.style.opacity = 0
+                    }
+                    dlg.style.opacity = 1                   
                     if (options.backdropUrl && options.mediaType === 'Video') {
 
                         dlg.classList.add('mpv-videoPlayerContainer-withBackdrop');
@@ -448,6 +449,9 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     case "speed":
                         self._onPlaybackRateUpdate(recv.data.data.value)
                         break
+                    case "core-idle":
+                        self._onCoreIdleUpdate(recv.data.data.value)
+                        break
                     default:
                         //console.log(`${recv.data.data.name}: ${recv.data.data.value}`)
                         dispatchEvent(new CustomEvent(recv.data.data.name, { detail: recv.data.data.value }))
@@ -457,11 +461,19 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         };
 
 
-        self.play = function (options) {
-
-            return createMediaElement(options).then(function () {
-                return playInternal(options);
-            });
+        self.play = async function (options) {
+            await createMediaElement(options);
+            await new Promise((resolve, reject) => {
+                addEventListener('core-playing', resolve, { once: true })
+                playInternal(options);
+            })
+            if (libmpv) {
+                libmpv.style.opacity = 1;
+            }
+            if (videoDialog && appSettings.get('mpv-vo') && appSettings.get('mpv-vo') !== 'libmpv' && window.platform === 'win32') {
+                videoDialog.style.opacity = 0;
+            }
+            await showOsd(options);
         };
 
         async function playInternal(options) {
@@ -580,9 +592,11 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             })
 
             await displaySync(fullscreen)
+        }
 
-            if (isVideo) {
-                if (fullscreen) {
+        async function showOsd(options) {
+            if (options.item.MediaType == 'Video') {
+                if (options.fullscreen) {
                     await embyRouter.showVideoOsd()
                     onNavigatedToOsd();
 
@@ -872,6 +886,12 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 events.trigger(self, 'stopped');
             }
         };
+
+        self._onCoreIdleUpdate = function (idle) {
+            if (!idle){
+                dispatchEvent(new Event('core-playing'))
+            }
+        }
 
         self._onDemuxerCacheTimeChanged = function (value) {
             playerState["demuxer-cache-time"] = value
