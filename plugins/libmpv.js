@@ -462,6 +462,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
 
         self.play = async function (options) {
+            await displaySync();
             await createMediaElement(options);
             await new Promise((resolve, reject) => {
                 addEventListener('core-playing', resolve, { once: true })
@@ -590,8 +591,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 start: `${Math.floor(startPositionTicks / 10000000)}`,
                 pause: false
             })
-
-            await displaySync(fullscreen)
         }
 
         async function showOsd(options) {
@@ -910,14 +909,12 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                             }
                         }
                     }
-                    if (pos[0]) {
-                        if (pos[0] != curRefreshRate) {
-                            curRefreshRate = await setRefreshRate(pos[0])
-                        }
-                    } else if (calc[0]) {
-                        if (calc[0] != curRefreshRate) {
-                            curRefreshRate = await setRefreshRate(calc[0])
-                        }
+                    var newRate = pos[0] ? pos[0] : calc[0]
+                    if (newRate && newRate != curRefreshRate) {
+                        self.pause()
+                        curRefreshRate = await setRefreshRate(newRate)
+                        await new Promise(r => setTimeout(r, 3000));
+                        self.unpause()
                     }
                 }
             }
@@ -1423,9 +1420,12 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             });
         }
 
-        async function displaySync(fullscreen) {
+        async function displaySync() {
             refreshRates = await getRefreshRateList()
-            orgRefreshRate = curRefreshRate = await getRefreshRate()
+            curRefreshRate = await getRefreshRate()
+            if (orgRefreshRate == null) {
+                orgRefreshRate = curRefreshRate
+            }
         }
 
         function calcRefreshRate(rates, fps) {
