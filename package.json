@@ -28,7 +28,6 @@
   "homepage": "https://github.com/MediaBrowser/Emby.Theater.Electron#readme",
   "devDependencies": {
     "electron": "^8.5.2",
-    "electron-builder": "^22.9.1",
     "node-gyp": "^6.1.0"
   },
   "dependencies": {
