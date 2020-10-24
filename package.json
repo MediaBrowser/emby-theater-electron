@@ -41,7 +41,6 @@
   "build": {
     "appId": "emby-teather-electron",
     "linux": {
-      "icon": "icon.png",
       "target": [
         "AppImage",
         "rpm",
