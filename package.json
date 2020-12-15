@@ -67,7 +67,10 @@
     "detect-rpi": "^1.4.0",
     "electron-squirrel-startup": "^1.0.0",
     "long": "^4.0.0",
-    "querystring": "^0.2.0"
+    "mpv.js": "^0.3.0",
+    "power-off": "^1.1.2",
+    "querystring": "^0.2.0",
+    "sleep-mode": "^1.1.0"
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.0-beta.54",
@@ -89,6 +92,7 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsdoc": "^30.7.8",
     "fork-ts-checker-webpack-plugin": "^6.0.7",
+    "node-gyp": "^7.1.2",
     "node-loader": "^1.0.2",
     "prettier": "^2.2.1",
     "prettier-eslint": "^12.0.0",

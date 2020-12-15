@@ -1,24 +1,24 @@
-﻿define(['apphost', 'events'], function (appHost, events) {
-    'use strict';
+﻿import events from 'events';
 
-    function fullscreenManager() {
-        document.addEventListener("windowstatechanged", () => {
-            events.trigger(this, 'fullscreenchange')
-        })
-    }
+import appHost from './apphost';
 
-    fullscreenManager.prototype.requestFullscreen = function (element) {
-        appHost.setWindowState('Maximized');
-    };
+function fullscreenManager() {
+  document.addEventListener('windowstatechanged', () => {
+    events.trigger(this, 'fullscreenchange');
+  });
+}
 
-    fullscreenManager.prototype.exitFullscreen = function () {
-        appHost.setWindowState('Normal');
-    };
+fullscreenManager.prototype.requestFullscreen = function (element) {
+  appHost.setWindowState('Maximized');
+};
 
-    fullscreenManager.prototype.isFullScreen = function () {
-        var windowState = appHost.getWindowState();
-        return windowState == 'Maximized' || windowState == 'Fullscreen';
-    };
+fullscreenManager.prototype.exitFullscreen = function () {
+  appHost.setWindowState('Normal');
+};
 
-    return new fullscreenManager();
-});
+fullscreenManager.prototype.isFullScreen = function () {
+  var windowState = appHost.getWindowState();
+  return windowState == 'Maximized' || windowState == 'Fullscreen';
+};
+
+export default new fullscreenManager();
