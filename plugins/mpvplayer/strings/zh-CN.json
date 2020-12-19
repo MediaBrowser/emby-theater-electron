@@ -29,5 +29,6 @@
     "EnableExclusiveAudioModeHelp": "\u542f\u7528\u72ec\u5360\u97f3\u9891\u6a21\u5f0f\u3002\u5728\u6b64\u6a21\u5f0f\u4e0b\uff0c\u7cfb\u7edf\u5c06\u5904\u4e8e\u9501\u5b9a\u72b6\u6001\uff0c\u4ec5 Emby \u624d\u80fd\u591f\u8f93\u51fa\u97f3\u9891\u3002",
     "DisplayResample": "\u663e\u793a\u91cd\u91c7\u6837\u3002",
     "DisplayVDrop": "\u663e\u793a\u89c6\u9891\u4e22\u5f03\u3002",
-    "LabelVideoOutput": "\u89c6\u9891\u8f93\u51fa\uff1a"
+    "LabelVideoOutput": "\u89c6\u9891\u8f93\u51fa\uff1a",
+    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
 }

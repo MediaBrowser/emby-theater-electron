@@ -29,5 +29,6 @@
     "EnableExclusiveAudioModeHelp": "Varaa \u00e4\u00e4nil\u00e4ht\u00f6 Embyn k\u00e4ytt\u00f6\u00f6n. T\u00e4ll\u00f6in \u00e4\u00e4nilaitteesta ei yleens\u00e4 kuulu j\u00e4rjestelm\u00e4n muita \u00e4\u00e4ni\u00e4.",
     "DisplayResample": "N\u00e4yt\u00e4 uudelleensamplaus.",
     "DisplayVDrop": "N\u00e4yt\u00e4 videon pudotukset.",
-    "LabelVideoOutput": "Videol\u00e4ht\u00f6:"
+    "LabelVideoOutput": "Videol\u00e4ht\u00f6:",
+    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
 }
