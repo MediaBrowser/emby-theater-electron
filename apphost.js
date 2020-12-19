@@ -95,6 +95,7 @@
         features.push('displaylanguage');
         features.push('keyboardsettings');
         //features.push('chromecast');
+        features.push('serversetup');
 
         return features;
     }();
