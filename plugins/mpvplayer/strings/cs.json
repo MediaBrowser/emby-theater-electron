@@ -29,5 +29,6 @@
     "EnableExclusiveAudioModeHelp": "Povolit re\u017eim exkluzivn\u00edho v\u00fdstupu. V tomto re\u017eimu je syst\u00e9m obvykle uzam\u010den a pouze Emby bude schopen generovat v\u00fdstup zvuku.",
     "DisplayResample": "Zobraz p\u0159evzorkovan\u00e9",
     "DisplayVDrop": "Zobraz zhor\u0161en\u00ed kvality videa",
-    "LabelVideoOutput": "Video output:"
+    "LabelVideoOutput": "Video output:",
+    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
 }

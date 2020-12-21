@@ -29,5 +29,6 @@
     "EnableExclusiveAudioModeHelp": "Aktivera exklusivt utmatningsl\u00e4ge. I det h\u00e4r l\u00e4get s\u00e5 \u00e4r systemet vanligtvis utel\u00e5st. Enbart Emby kommer att ha m\u00f6jlighet till att mata ut ljud.",
     "DisplayResample": "Visa resample.",
     "DisplayVDrop": "Visa videof\u00f6rlust.",
-    "LabelVideoOutput": "Video output:"
+    "LabelVideoOutput": "Videoutg\u00e5ng:",
+    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
 }

@@ -29,5 +29,6 @@
     "EnableExclusiveAudioModeHelp": "Umo\u017cliwia dost\u0119p do urz\u0105dzenia d\u017awi\u0119kowego w trybie wy\u0142\u0105czno\u015bci. W tym trybie, podsystem d\u017awi\u0119kowy jest zablokowany, tylko Emby b\u0119dzie mia\u0142o mo\u017cliwo\u015b\u0107 odtwarzania d\u017awi\u0119k\u00f3w.",
     "DisplayResample": "Display resample.",
     "DisplayVDrop": "Display video drop.",
-    "LabelVideoOutput": "Video output:"
+    "LabelVideoOutput": "Video output:",
+    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
 }

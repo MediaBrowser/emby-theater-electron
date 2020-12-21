@@ -29,5 +29,6 @@
     "EnableExclusiveAudioModeHelp": "Abilita la modalit\u00e0 di output esclusiva. In questa modalit\u00e0, il sistema \u00e8 di solito bloccato e solo Emby sar\u00e0 in grado di emettere audio.",
     "DisplayResample": "Display resample.",
     "DisplayVDrop": "Display video drop.",
-    "LabelVideoOutput": "Video output:"
+    "LabelVideoOutput": "Video output:",
+    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
 }
