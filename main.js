@@ -752,26 +752,24 @@
     function getPluginEntry(pluginDir, pluginName = `mpv-${process.platform}-${process.arch}.node`) {
         var path = require('path')
         const fullPluginPath = path.join(pluginDir, pluginName);
-        // Try relative path to workaround ASCII-only path restriction.
-        let pluginPath = path.relative(process.cwd(), fullPluginPath);
-        if (path.dirname(pluginPath) === ".") {
-            // "./plugin" is required only on Linux.
+        let pluginPath = ""
+        if (containsNonASCII(fullPluginPath)) {
+            // Try relative path to workaround ASCII-only path restriction.
             if (process.platform === "linux") {
-                pluginPath = `.${path.sep}${pluginPath}`;
+                pluginPath = path.relative(process.cwd(), fullPluginPath);
+                if (path.dirname(pluginPath) === ".") {
+                    pluginPath = `.${path.sep}${pluginPath}`;
+                }
+            } else if (process.platform === "win32") {
+                process.chdir(pluginDir)
+                pluginPath = path.relative(process.cwd(), fullPluginPath);
             }
         } else {
-            // Relative plugin paths doesn't work reliably on Windows, see
-            // <https://github.com/Kagami/mpv.js/issues/9>.
-            if (process.platform === "win32") {
-                pluginPath = fullPluginPath;
-            }
+            pluginPath = fullPluginPath
         }
+
         if (containsNonASCII(pluginPath)) {
-            if (containsNonASCII(fullPluginPath)) {
-                throw new Error("Non-ASCII plugin path is not supported");
-            } else {
-                pluginPath = fullPluginPath;
-            }
+            throw new Error("Non-ASCII plugin path is not supported");
         }
         return `${pluginPath};application/x-mpvjs`;
     }
