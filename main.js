@@ -108,6 +108,7 @@
     }
 
     function onEnterFullscreen() {
+        previousBounds = mainWindow.getBounds()
         onWindowStateChanged('Fullscreen');
 
         if (initialShowEventsComplete) {
@@ -174,7 +175,6 @@
         });
     }
 
-    var windowStateOnLoad;
     function registerAppHost() {
 
         var protocol = electron.protocol;
@@ -246,10 +246,6 @@
                     }
                     break;
                 case 'loaded':
-
-                    if (windowStateOnLoad) {
-                        setWindowState(windowStateOnLoad);
-                    }
                     mainWindow.focus();
                     hasAppLoaded = true;
                     onLoaded();
@@ -806,7 +802,10 @@
     function onWindowClose() {
 
         if (hasAppLoaded) {
-            var data = mainWindow.getBounds();
+            var data = previousBounds
+            if (currentWindowState !== "Fullscreen"){
+                data = mainWindow.getBounds();
+            }
             data.state = currentWindowState;
             var windowStatePath = getWindowStateDataPath();
             require("fs").writeFileSync(windowStatePath, JSON.stringify(data));
@@ -929,11 +928,13 @@
         catch (e) {
             previousWindowInfo = {};
         }
+        var isfullscreen = require('detect-rpi')() || previousWindowInfo.state === "Fullscreen"
 
         var windowOptions = {
             transparent: true, //supportsTransparency,
             frame: false,
-            resizable: true,
+            resizable: !isfullscreen,
+            movable: !isfullscreen,
             title: 'Emby Theater',
             minWidth: 720,
             minHeight: 480,
@@ -985,13 +986,6 @@
 
             var url = getAppUrl();
 
-            var isRpi = require('detect-rpi');
-            if (isRpi()) {
-                windowStateOnLoad = 'Fullscreen';
-            } else {
-                windowStateOnLoad = previousWindowInfo.state;
-            }
-
             addPathIntercepts();
 
             registerAppHost();
@@ -1017,6 +1011,9 @@
             mainWindow.on("unmaximize", onUnMaximize);
 
             mainWindow.on("show", onWindowShow);
+            if (isfullscreen) {
+                mainWindow.setFullScreen(isfullscreen)
+            }
 
             mainWindow.show();
 
