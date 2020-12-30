@@ -113,8 +113,10 @@
 
         if (initialShowEventsComplete) {
             mainWindow.focus();
-            mainWindow.resizable = false;
-            mainWindow.movable = false;
+            if (!require('is-linux')()) {
+                mainWindow.resizable = false;
+                mainWindow.movable = false;
+            }
         }
     }
 
@@ -123,8 +125,10 @@
         onWindowStateChanged('Normal');
 
         if (initialShowEventsComplete) {
-            mainWindow.resizable = true;
-            mainWindow.movable = true;
+            if (!require('is-linux')()) {
+                mainWindow.resizable = true;
+                mainWindow.movable = true;
+            }
         }
     }
 
@@ -918,7 +922,7 @@
     // initialization and is ready to create browser windows.
     app.on('ready', function () {
 
-        var isWindows = require('is-windows');
+        var islinux = require('is-linux')();
         var windowStatePath = getWindowStateDataPath();
 
         var previousWindowInfo;
@@ -933,8 +937,8 @@
         var windowOptions = {
             transparent: true, //supportsTransparency,
             frame: false,
-            resizable: !isfullscreen,
-            movable: !isfullscreen,
+            resizable: !isfullscreen || islinux,
+            movable: !isfullscreen || islinux,
             title: 'Emby Theater',
             minWidth: 720,
             minHeight: 480,
