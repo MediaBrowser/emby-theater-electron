@@ -16,7 +16,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         var currentSrc;
         var playerState = {
-            volume: parseInt(appSettings.get('mpv-volume') || '100'),
+            volume: 100,
             isMuted: false,
             subDelay: 0,
             playbackRate: 1
@@ -530,7 +530,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             }
 
             var playerOptions = {
-                "volume": playerState.volume,
+                "volume": appSettings.get('mpv-volume') || playerState.volume,
                 "audio-display": 'no',
                 "wid": window.PlayerWindowId,
                 "keep-open": 'yes',
@@ -654,6 +654,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             if (destroyPlayer) {
                 await destroyInternal()
             } else {
+                appSettings.set('mpv-volume', playerState.volume);
                 await sendCommand('stop')
             }
             self._onStopped(true)
@@ -866,18 +867,13 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         };
 
         self._onMute = function (muted) {
-            if (playerState.isMuted !== muted) {
-                playerState.isMuted = muted;
-                events.trigger(self, 'volumechange');
-            }
+            playerState.isMuted = muted;
+            events.trigger(self, 'volumechange');
         }
 
         self._onVolumeChange = function (volume) {
-            if (playerState.volume !== volume) {
-                playerState.volume = volume;
-                appSettings.set('mpv-volume', volume);
-                events.trigger(self, 'volumechange');
-            }
+            playerState.volume = volume;
+            events.trigger(self, 'volumechange');
         };
 
         self._onStopped = function (stopped) {
@@ -965,6 +961,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         function destroyInternal() {
 
             embyRouter.setTransparency('none');
+
+            appSettings.set('mpv-volume', playerState.volume);
 
             if (orgRefreshRate != curRefreshRate) {
                 setRefreshRate(orgRefreshRate)
