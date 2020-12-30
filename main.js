@@ -815,7 +815,6 @@
             require("fs").writeFileSync(windowStatePath, JSON.stringify(data));
         }
 
-        sendJavascript('AppCloseHelper.onClosing();');
 
         // Unregister all shortcuts.
         electron.globalShortcut.unregisterAll();
@@ -824,7 +823,6 @@
             cecProcess.kill();
         }
 
-        app.exit();
     }
 
     function parseCommandLine() {
