@@ -393,7 +393,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     if (libmpv) {
                         libmpv.style.opacity = 0
                     }
-                    dlg.style.opacity = 1                   
+                    dlg.style.opacity = 1
                     if (options.backdropUrl && options.mediaType === 'Video') {
 
                         dlg.classList.add('mpv-videoPlayerContainer-withBackdrop');
@@ -468,7 +468,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 addEventListener('core-playing', resolve, { once: true })
                 playInternal(options);
             })
-            if (libmpv) {
+            if (libmpv && options.mediaType === 'Video') {
                 libmpv.style.opacity = 1;
             }
             if (videoDialog && appSettings.get('mpv-vo') && appSettings.get('mpv-vo') !== 'libmpv' && window.platform === 'win32') {
@@ -537,7 +537,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 "speed": 1,
                 "sub-delay": 0
             }
-            
+
             if (appSettings.get('mpv-hwdec') !== "unset") {
                 playerOptions["hwdec"] = appSettings.get('mpv-hwdec') || "auto"
             }
@@ -883,7 +883,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         };
 
         self._onCoreIdleUpdate = function (idle) {
-            if (!idle){
+            if (!idle) {
                 dispatchEvent(new Event('core-playing'))
             }
         }
@@ -927,7 +927,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         };
 
         self.setSubtitleOffset = function (value) {
-            setProperty({ "sub-delay": value / 1000});
+            setProperty({ "sub-delay": value / 1000 });
         };
 
         self.incrementSubtitleOffset = function (value) {
