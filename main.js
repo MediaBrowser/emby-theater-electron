@@ -807,7 +807,7 @@
 
         if (hasAppLoaded) {
             var data = previousBounds
-            if (currentWindowState !== "Fullscreen"){
+            if (currentWindowState !== "Fullscreen") {
                 data = mainWindow.getBounds();
             }
             data.state = currentWindowState;
