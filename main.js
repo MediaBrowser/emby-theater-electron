@@ -964,7 +964,7 @@
                 sandbox: false
             },
 
-            icon: __dirname + '/icon.ico'
+            icon: __dirname + '/icon.png'
         };
 
         windowOptions.width = previousWindowInfo.width || 1280;
