@@ -930,7 +930,7 @@
         catch (e) {
             previousWindowInfo = {};
         }
-        var isfullscreen = require('detect-rpi')() || previousWindowInfo.state === "Fullscreen"
+        var isfullscreen = require('detect-rpi')() || previousWindowInfo.state === "Fullscreen" || previousWindowInfo.state === "Maximized"
 
         var windowOptions = {
             transparent: true, //supportsTransparency,
