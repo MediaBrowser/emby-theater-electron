@@ -113,23 +113,11 @@
 
         if (initialShowEventsComplete) {
             mainWindow.focus();
-            if (!require('is-linux')()) {
-                mainWindow.resizable = false;
-                mainWindow.movable = false;
-            }
         }
     }
 
     function onLeaveFullscreen() {
-
         onWindowStateChanged('Normal');
-
-        if (initialShowEventsComplete) {
-            if (!require('is-linux')()) {
-                mainWindow.resizable = true;
-                mainWindow.movable = true;
-            }
-        }
     }
 
     function onUnMaximize() {
@@ -178,7 +166,7 @@
         powerOff(function (err, stderr, stdout) {
         });
     }
-
+    var windowStateOnLoad;
     function registerAppHost() {
 
         var protocol = electron.protocol;
@@ -250,6 +238,9 @@
                     }
                     break;
                 case 'loaded':
+                    if (windowStateOnLoad) {
+                        setWindowState(windowStateOnLoad);
+                    }
                     mainWindow.focus();
                     hasAppLoaded = true;
                     onLoaded();
@@ -920,7 +911,6 @@
     // initialization and is ready to create browser windows.
     app.on('ready', function () {
 
-        var islinux = require('is-linux')();
         var windowStatePath = getWindowStateDataPath();
 
         var previousWindowInfo;
@@ -930,13 +920,11 @@
         catch (e) {
             previousWindowInfo = {};
         }
-        var isfullscreen = require('detect-rpi')() || previousWindowInfo.state === "Fullscreen" || previousWindowInfo.state === "Maximized"
+        windowStateOnLoad = require('detect-rpi')() ? 'Fullscreen' : previousWindowInfo.state;
 
         var windowOptions = {
             transparent: true, //supportsTransparency,
             frame: false,
-            resizable: !isfullscreen || islinux,
-            movable: !isfullscreen || islinux,
             title: 'Emby Theater',
             minWidth: 720,
             minHeight: 480,
@@ -1013,9 +1001,6 @@
             mainWindow.on("unmaximize", onUnMaximize);
 
             mainWindow.on("show", onWindowShow);
-            if (isfullscreen) {
-                mainWindow.setFullScreen(isfullscreen)
-            }
 
             mainWindow.show();
 
