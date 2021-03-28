@@ -28,9 +28,10 @@
   },
   "dependencies": {
     "detect-rpi": "^1.4.0",
+    "is-linux": "^1.0.1",
     "is-windows": "^1.0.2",
     "long": "^3.2.0",
-    "power-off": "^1.0.1",
+    "power-off": "^1.1.2",
     "sleep-mode": "^1.1.0"
   }
 }
