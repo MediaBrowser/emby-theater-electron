@@ -30,5 +30,5 @@
     "DisplayResample": "N\u00e4yt\u00e4 uudelleensamplaus.",
     "DisplayVDrop": "N\u00e4yt\u00e4 videon pudotukset.",
     "LabelVideoOutput": "Videol\u00e4ht\u00f6:",
-    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
+    "VideoOutputHelp": "Useimmissa tapauksissa on suositeltavaa k\u00e4ytt\u00e4\u00e4 automaattiasetusta. GPU:n k\u00e4ytt\u00f6 voi parantaa suorituskyky\u00e4 joissakin ymp\u00e4rist\u00f6iss\u00e4, mutta saattaa lis\u00e4ksi aiheuttaa ongelmia videon esityksess\u00e4."
 }

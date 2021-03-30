@@ -30,5 +30,5 @@
     "DisplayResample": "\u663e\u793a\u91cd\u91c7\u6837\u3002",
     "DisplayVDrop": "\u663e\u793a\u89c6\u9891\u4e22\u5f03\u3002",
     "LabelVideoOutput": "\u89c6\u9891\u8f93\u51fa\uff1a",
-    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
+    "VideoOutputHelp": "\u5efa\u8bae\u5728\u5927\u591a\u6570\u60c5\u51b5\u4e0b\u81ea\u52a8\u79bb\u5f00\u3002\u542f\u7528 GPU \u53ef\u80fd\u5728\u67d0\u4e9b\u73af\u5883\u4e0b\u6027\u80fd\u66f4\u597d\uff0c\u4f46\u4e5f\u53ef\u80fd\u5bfc\u81f4\u5c4f\u5e55\u4e0a\u7684\u89c6\u9891\u4e0d\u80fd\u6b63\u786e\u663e\u793a\u3002"
 }

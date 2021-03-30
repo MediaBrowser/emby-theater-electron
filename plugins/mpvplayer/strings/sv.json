@@ -30,5 +30,5 @@
     "DisplayResample": "Visa resample.",
     "DisplayVDrop": "Visa videof\u00f6rlust.",
     "LabelVideoOutput": "Videoutg\u00e5ng:",
-    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
+    "VideoOutputHelp": "Det rekommenderas att l\u00e4mna som Auto i de flesta fall. Att aktivera GPU kan fungera b\u00e4ttre i vissa milj\u00f6er, men kan ocks\u00e5 orsaka att on-screen inte visas korrekt."
 }

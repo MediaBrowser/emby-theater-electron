@@ -30,5 +30,5 @@
     "DisplayResample": "Display resample.",
     "DisplayVDrop": "Display video drop.",
     "LabelVideoOutput": "Video output:",
-    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
+    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling GPU may perform better in some environments, but may also cause the video on-screen display to not display properly."
 }

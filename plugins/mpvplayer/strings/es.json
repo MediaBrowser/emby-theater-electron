@@ -30,5 +30,5 @@
     "DisplayResample": "Remuestreo de pantalla.",
     "DisplayVDrop": "Mostrar video cortado",
     "LabelVideoOutput": "Salida de v\u00eddeo:",
-    "VideoOutputHelp": "Recommended to leave as Auto in most cases. Enabling gpu may perform better in some environments, but may also cause the video on-screen display to not display properly."
+    "VideoOutputHelp": "Recomendado dejarlo como Auto en la mayor\u00eda de los casos. Habilitar GPU puede funcionar mejor en algunos entornos, pero tambi\u00e9n puede hacer que la visualizaci\u00f3n del video en pantalla no se muestre correctamente."
 }
