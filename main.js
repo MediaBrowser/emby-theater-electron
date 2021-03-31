@@ -5,6 +5,7 @@
     var BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
     var BrowserView = electron.BrowserView;  // Module to create native browser window.
     var powerSaveBlocker = electron.powerSaveBlocker
+    var nativeImage = electron.nativeImage;
 
     // Keep a global reference of the window object, if you don't, the window will
     // be closed automatically when the JavaScript object is garbage collected.
@@ -952,7 +953,7 @@
                 sandbox: false
             },
 
-            icon: __dirname + '/icon.ico'
+            icon: nativeImage.createFromPath(__dirname + '/icon.png')
         };
 
         windowOptions.width = previousWindowInfo.width || 1280;
