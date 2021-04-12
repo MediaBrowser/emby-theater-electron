@@ -736,8 +736,8 @@
         else if (process.platform === 'win32') {
             //app.disableHardwareAcceleration();
 
-            app.commandLine.appendSwitch('high-dpi-support', 'true');
-            app.commandLine.appendSwitch('force-device-scale-factor', '1');
+            //app.commandLine.appendSwitch('high-dpi-support', 'true');
+            //app.commandLine.appendSwitch('force-device-scale-factor', '1');
         }
     }
 
