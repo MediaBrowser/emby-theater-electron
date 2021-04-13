@@ -923,6 +923,9 @@
         }
         windowStateOnLoad = require('detect-rpi')() ? 'Fullscreen' : previousWindowInfo.state;
 
+        var path = require('path')
+        var icon = require('is-windows') ? 'icon.ico' : 'icon.png'
+
         var windowOptions = {
             transparent: true, //supportsTransparency,
             frame: false,
@@ -953,7 +956,7 @@
                 sandbox: false
             },
 
-            icon: nativeImage.createFromPath(__dirname + '/icon.png')
+            icon: nativeImage.createFromPath(path.join(__dirname, icon))
         };
 
         windowOptions.width = previousWindowInfo.width || 1280;
