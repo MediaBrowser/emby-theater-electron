@@ -586,7 +586,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 await setAudioStream(mediaSource.DefaultAudioStreamIndex);
             }
 
-            await setSubtitleStream(mediaSource.DefaultSubtitleStreamIndex || -1)
+            await setSubtitleStream(mediaSource.DefaultSubtitleStreamIndex)
             await setProperty({
                 start: `${Math.floor(startPositionTicks / 10000000)}`,
                 pause: false
@@ -1070,7 +1070,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
         function setSubtitleStream(index) {
             setProperty({ "sub-delay": 0 })
-            if (index < 0) {
+            if (index === null || index < 0) {
                 return setProperty({ "sid": "no" });
             } else {
                 var subIndex = 0;
