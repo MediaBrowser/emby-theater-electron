@@ -586,7 +586,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 await setAudioStream(mediaSource.DefaultAudioStreamIndex);
             }
 
-            await setSubtitleStream(mediaSource.DefaultSubtitleStreamIndex)
+            var subtitleIndexToSet = mediaSource.DefaultSubtitleStreamIndex == null ? -1 : mediaSource.DefaultSubtitleStreamIndex;
+            await setSubtitleStream(subtitleIndexToSet)
             await setProperty({
                 start: `${Math.floor(startPositionTicks / 10000000)}`,
                 pause: false
