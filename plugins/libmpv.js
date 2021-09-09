@@ -5,6 +5,31 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
         return playbackManager.getSubtitleUrl(subtitleStream, serverId);
     }
 
+    function toDecimal(val) {
+        return parseFloat(val) / 255;
+    }
+
+    function hexToRgbA(hex, alpha) {
+
+        if (hex === 'transparent') {
+            return hex;
+        }
+
+        var c;
+        if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+            c = hex.substring(1).split('');
+            if (c.length === 3) {
+                c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+            }
+            c = '0x' + c.join('');
+
+            alpha = Math.min(1, alpha);
+            alpha = Math.max(0, alpha);
+            return [(c >> 16) & 255, (c >> 8) & 255, c & 255].map(toDecimal).join('/') + '/' + alpha;
+        }
+        throw new Error('Bad Hex');
+    }
+
     return function () {
 
         var self = this;
@@ -572,6 +597,10 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
             if (fontSize) {
                 playerOptions["sub-font-size"] = fontSize
+            }
+
+            if (subtitleAppearanceSettings.textBackground) {
+                playerOptions["sub-back-color"] = hexToRgbA(subtitleAppearanceSettings.textBackground, parseFloat(subtitleAppearanceSettings.textBackgroundOpacity || '1'));
             }
 
             if (subtitleAppearanceSettings.textColor && subtitleAppearanceSettings.textColor.indexOf('#') === 0) {
