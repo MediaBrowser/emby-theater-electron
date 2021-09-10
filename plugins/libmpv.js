@@ -1352,11 +1352,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     value: getDroppedFrames(responses)
                 });
 
-                stats.push({
-                    label: 'Display Fullscreen Resolution:',
-                    value: screen.width + ' x ' + screen.height
-                });
-
                 if (videoParams.w && videoParams.h) {
                     stats.push({
                         label: 'Video resolution:',
