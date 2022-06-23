@@ -342,6 +342,10 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 Format: 'smi',
                 Method: 'Embed'
             });
+            profile.SubtitleProfiles.push({
+                Format: 'mov_text',
+                Method: 'Embed'
+            });
 
             profile.ResponseProfiles = [];
 
