@@ -318,17 +318,22 @@
                 case 'fileexists':
                 case 'directoryexists':
 
-                    var path = request.url.split('=')[1];
+                    try {
+                        var path = request.url.split('=')[1];
 
-                    fs.access(path, (err) => {
-                        if (err) {
-                            console.error('fs access result for path: ' + err);
+                        fs.access(path, (err) => {
+                            if (err) {
+                                console.error('fs access result for path: ' + err);
 
-                            callback('false');
-                        } else {
-                            callback('true');
-                        }
-                    });
+                                callback('false');
+                            } else {
+                                callback('true');
+                            }
+                        });
+                    }
+                    catch (err) {
+                        callback('false');
+                    }
                     break;
                 default:
                     callback("");
