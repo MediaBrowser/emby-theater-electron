@@ -346,6 +346,14 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 Format: 'mov_text',
                 Method: 'Embed'
             });
+            profile.SubtitleProfiles.push({
+                Format: 'eia_608',
+                Method: 'VideoSideData'
+            });
+            profile.SubtitleProfiles.push({
+                Format: 'eia_708',
+                Method: 'VideoSideData'
+            });
 
             profile.ResponseProfiles = [];
 
@@ -612,7 +620,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             }
 
 
-            await setProperty(Object.assign(playerOptions, audioDelay(), interlace(), getMpvAudioOptions(mediaType)))
+            await setProperty(Object.assign(playerOptions, audioDelay(), interlace(), createClosedCaptionTrack(), getMpvAudioOptions(mediaType)))
             await sendCommand(['loadfile', url])
 
             if (mediaSource.DefaultAudioStreamIndex && playMethod != 'Transcode') {
@@ -1012,6 +1020,11 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             }
 
             return Promise.resolve()
+        }
+
+        function createClosedCaptionTrack() {
+
+            return { 'sub-create-cc-track': 'yes' };
         }
 
         function interlace() {
