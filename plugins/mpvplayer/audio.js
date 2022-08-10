@@ -1,4 +1,4 @@
-﻿define(['loading', 'appSettings', 'emby-select', 'emby-checkbox', 'emby-scroller'], function (loading, appSettings) {
+﻿define(['loading', 'appSettings', 'baseView', 'emby-select', 'emby-checkbox', 'emby-scroller'], function (loading, appSettings, BaseView) {
 
     function getMultiCheckboxValues(view, className) {
 
@@ -31,44 +31,52 @@
         return false;
     }
 
-    return function (view, params) {
+    function renderSettings(view) {
 
-        view.querySelector('form').addEventListener('submit', onSubmit);
+        view.querySelector('.selectSpeakerLayout').value = appSettings.get('mpv-speakerlayout') || '';
+        view.querySelector('.selectDrc').value = appSettings.get('mpv-drc') || '';
+        view.querySelector('.chkExclusiveMode').checked = appSettings.get('mpv-exclusiveAudio') === 'true';
 
-        view.addEventListener('viewbeforeshow', function (e) {
-
-            var isRestored = e.detail.isRestored;
-
-            Emby.Page.setTitle('Audio Settings');
-
-            loading.hide();
-
-            if (!isRestored) {
-                renderSettings();
-            }
-        });
-
-        view.addEventListener('viewbeforehide', saveSettings);
-
-        function saveSettings() {
-
-            appSettings.set('mpv-drc', view.querySelector('.selectDrc').value);
-            appSettings.set('mpv-speakerlayout', view.querySelector('.selectSpeakerLayout').value);
-            appSettings.set('mpv-exclusiveAudio', view.querySelector('.chkExclusiveMode').checked);
-
-            appSettings.set('mpv-audiospdif', getMultiCheckboxValues(view, 'chkSpdif').join(','));
-            appSettings.set('mpv-upmixaudiofor', getMultiCheckboxValues(view, 'chkUpmixAudioFor').join(','));
-        }
-
-        function renderSettings() {
-
-            view.querySelector('.selectSpeakerLayout').value = appSettings.get('mpv-speakerlayout') || '';
-            view.querySelector('.selectDrc').value = appSettings.get('mpv-drc') || '';
-            view.querySelector('.chkExclusiveMode').checked = appSettings.get('mpv-exclusiveAudio') === 'true';
-
-            setMultiCheckboxValues(view, 'chkSpdif', appSettings.get('mpv-audiospdif') || '');
-            setMultiCheckboxValues(view, 'chkUpmixAudioFor', appSettings.get('mpv-upmixaudiofor') || '');
-        }
+        setMultiCheckboxValues(view, 'chkSpdif', appSettings.get('mpv-audiospdif') || '');
+        setMultiCheckboxValues(view, 'chkUpmixAudioFor', appSettings.get('mpv-upmixaudiofor') || '');
     }
 
+    function saveSettings(view) {
+
+        appSettings.set('mpv-drc', view.querySelector('.selectDrc').value);
+        appSettings.set('mpv-speakerlayout', view.querySelector('.selectSpeakerLayout').value);
+        appSettings.set('mpv-exclusiveAudio', view.querySelector('.chkExclusiveMode').checked);
+
+        appSettings.set('mpv-audiospdif', getMultiCheckboxValues(view, 'chkSpdif').join(','));
+        appSettings.set('mpv-upmixaudiofor', getMultiCheckboxValues(view, 'chkUpmixAudioFor').join(','));
+    }
+
+    function SettingsView(view, params) {
+
+        BaseView.apply(this, arguments);
+
+        view.querySelector('form').addEventListener('submit', onSubmit);
+    }
+
+    Object.assign(SettingsView.prototype, BaseView.prototype);
+
+    SettingsView.prototype.onResume = function (options) {
+
+        BaseView.prototype.onResume.apply(this, arguments);
+
+        loading.hide();
+
+        if (options.refresh) {
+            renderSettings(this.view);
+        }
+    };
+
+    SettingsView.prototype.onPause = function () {
+
+        saveSettings(this.view);
+
+        BaseView.prototype.onPause.apply(this, arguments);
+    };
+
+    return SettingsView;
 });

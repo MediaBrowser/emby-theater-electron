@@ -20,7 +20,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 category: 'Playback',
                 thumbImage: '',
                 icon: 'tv',
-                settingsTheme: true
+                settingsTheme: true,
+                adjustHeaderForEmbeddedScroll: true
             });
 
             return routes;

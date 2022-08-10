@@ -1,37 +1,45 @@
-define(['loading', 'pluginManager', 'appSettings', 'emby-select', 'emby-checkbox', 'emby-input', 'emby-scroller'], function (loading, pluginManager, appSettings) {
+define(['loading', 'baseView', 'pluginManager', 'appSettings', 'emby-select', 'emby-checkbox', 'emby-input', 'emby-scroller'], function (loading, BaseView, pluginManager, appSettings) {
 
     function onSubmit(e) {
         e.preventDefault();
         return false;
     }
 
-    return function (view, params) {
-
-        view.querySelector('form').addEventListener('submit', onSubmit);
-
-        view.addEventListener('viewbeforeshow', function (e) {
-
-            var isRestored = e.detail.isRestored;
-
-            Emby.Page.setTitle('Cec Settings');
-
-            loading.hide();
-
-            if (!isRestored) {
-
-                renderSettings();
-            }
-        });
-
-        view.addEventListener('viewbeforehide', saveSettings);
-
-        function saveSettings() {
-            appSettings.set('cec-hdmiport', view.querySelector('.hdmiPort').value);
-        }
-
-        function renderSettings() {
-            view.querySelector('.hdmiPort').value = appSettings.get('cec-hdmiport') || '';
-        }
+    function renderSettings(view) {
+        view.querySelector('.hdmiPort').value = appSettings.get('cec-hdmiport') || '';
     }
 
+    function saveSettings(view) {
+
+        appSettings.set('cec-hdmiport', view.querySelector('.hdmiPort').value);
+    }
+
+    function SettingsView(view, params) {
+
+        BaseView.apply(this, arguments);
+
+        view.querySelector('form').addEventListener('submit', onSubmit);
+    }
+
+    Object.assign(SettingsView.prototype, BaseView.prototype);
+
+    SettingsView.prototype.onResume = function (options) {
+
+        BaseView.prototype.onResume.apply(this, arguments);
+
+        loading.hide();
+
+        if (options.refresh) {
+            renderSettings(this.view);
+        }
+    };
+
+    SettingsView.prototype.onPause = function () {
+
+        saveSettings(this.view);
+
+        BaseView.prototype.onPause.apply(this, arguments);
+    };
+
+    return SettingsView;
 });

@@ -69,7 +69,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 category: 'Playback',
                 thumbImage: '',
                 icon: 'audiotrack',
-                settingsTheme: true
+                settingsTheme: true,
+                adjustHeaderForEmbeddedScroll: true
             });
 
             if (appHost.supports('windowtransparency')) {
@@ -82,7 +83,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                     category: 'Playback',
                     thumbImage: '',
                     icon: 'tv',
-                    settingsTheme: true
+                    settingsTheme: true,
+                    adjustHeaderForEmbeddedScroll: true
                 });
             }
 
