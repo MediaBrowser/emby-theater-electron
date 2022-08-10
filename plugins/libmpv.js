@@ -1128,6 +1128,16 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             return '';
         }
 
+        function enableInternalSubtitleStream(stream, subIndex) {
+
+            return setProperty({ "sid": subIndex }).then(() => {
+                if (stream.Codec == "dvb_teletext") {
+                    return setDvbTeletextPage(stream);
+                }
+                return Promise.resolve()
+            })
+        }
+
         function setSubtitleStream(index) {
             setProperty({ "sub-delay": 0 })
             if (index === null || index < 0) {
@@ -1144,12 +1154,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                             if (stream.DeliveryMethod == 'External') {
                                 return sendCommand(["sub-add", stream.DeliveryUrl, "cached", stream.DisplayTitle, stream.Language]);
                             } else {
-                                return setProperty({ "sid": subIndex }).then(() => {
-                                    if (stream.Codec == "dvb_teletext") {
-                                        return setDvbTeletextPage(stream);
-                                    }
-                                    return Promise.resolve()
-                                })
+                                return enableInternalSubtitleStream(stream, subIndex);
                             }
                         }
                     }
