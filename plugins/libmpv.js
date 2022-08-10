@@ -620,7 +620,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             }
 
 
-            await setProperty(Object.assign(playerOptions, audioDelay(), interlace(), createClosedCaptionTrack(isVideo), getMpvAudioOptions(mediaType)))
+            await setProperty(Object.assign(playerOptions, audioDelay(), interlace(), createClosedCaptionTrack(mediaSource, isVideo), getMpvAudioOptions(mediaType)))
             await sendCommand(['loadfile', url])
 
             if (mediaSource.DefaultAudioStreamIndex && playMethod != 'Transcode') {
@@ -1022,11 +1022,19 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             return Promise.resolve()
         }
 
-        function createClosedCaptionTrack(isVideo) {
+        function createClosedCaptionTrack(mediaSource, isVideo) {
 
-            if (isVideo) {
-                return { 'sub-create-cc-track': 'yes' };
+            var streams = mediaSource.MediaStreams || [];
+
+            for (var i = 0, length = streams.length; i < length; i++) {
+
+                var stream = streams[i];
+
+                if (stream.DeliveryMethod == 'VideoSideData') {
+                    return { 'sub-create-cc-track': 'yes' };
+                }
             }
+
             return { 'sub-create-cc-track': 'no' };
         }
 
