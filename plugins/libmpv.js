@@ -1073,7 +1073,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 audioChannels = '5.1,stereo';
             }
             else if (audioChannels === '7.1') {
-                audioChannels = '7.1,stereo';
+                audioChannels = '7.1,5.1,stereo';
             }
 
             var audioChannelsFilter = getAudioChannelsFilter(mediaType);
