@@ -48,10 +48,6 @@
             features.push('sharing');
         }
 
-        if (appStartInfo.supportsTransparentWindow) {
-            features.push('windowtransparency');
-        }
-
         if (supportsVoiceInput()) {
             features.push('voiceinput');
         }

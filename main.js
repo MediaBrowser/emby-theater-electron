@@ -536,7 +536,6 @@
                         version: app.getVersion(),
                         deviceName: os.hostname(),
                         deviceId: os.hostname(),
-                        supportsTransparentWindow: supportsTransparentWindow(),
                         plugins: pluginFiles.filter(function (f) {
 
                             return f.indexOf('.js') != -1;
@@ -781,11 +780,6 @@
             }
         }
         return false;
-    }
-
-    function supportsTransparentWindow() {
-
-        return true;
     }
 
     function getWindowStateDataPath() {

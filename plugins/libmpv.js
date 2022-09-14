@@ -1,4 +1,4 @@
-define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'embyRouter', 'appSettings', 'userSettings', 'require', 'connectionManager'], function (globalize, appHost, playbackManager, pluginManager, events, embyRouter, appSettings, userSettings, require, connectionManager) {
+define(['globalize', 'playbackManager', 'pluginManager', 'events', 'embyRouter', 'appSettings', 'userSettings', 'require', 'connectionManager'], function (globalize, playbackManager, pluginManager, events, embyRouter, appSettings, userSettings, require, connectionManager) {
     'use strict';
 
     function getTextTrackUrl(subtitleStream, serverId) {
@@ -73,20 +73,18 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 adjustHeaderForEmbeddedScroll: true
             });
 
-            if (appHost.supports('windowtransparency')) {
-                routes.push({
-                    path: 'mpvplayer/video.html',
-                    transition: 'slide',
-                    controller: pluginManager.mapPath(self, 'mpvplayer/video.js'),
-                    type: 'settings',
-                    title: 'Video',
-                    category: 'Playback',
-                    thumbImage: '',
-                    icon: 'tv',
-                    settingsTheme: true,
-                    adjustHeaderForEmbeddedScroll: true
-                });
-            }
+            routes.push({
+                path: 'mpvplayer/video.html',
+                transition: 'slide',
+                controller: pluginManager.mapPath(self, 'mpvplayer/video.js'),
+                type: 'settings',
+                title: 'Video',
+                category: 'Playback',
+                thumbImage: '',
+                icon: 'tv',
+                settingsTheme: true,
+                adjustHeaderForEmbeddedScroll: true
+            });
 
             return routes;
         };
@@ -207,7 +205,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
             if ((mediaType || '').toLowerCase() == 'video') {
 
-                return appHost.supports('windowtransparency');
+                return true;
             }
             return (mediaType || '').toLowerCase() == 'audio';
         };
