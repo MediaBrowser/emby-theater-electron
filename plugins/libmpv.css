@@ -14,27 +14,3 @@
     margin: 0 !important;
     padding: 0 !important;
 }
-
-.mpv-videoPlayerContainer-withBackdrop {
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    background-attachment: fixed;
-    background-color: #000;
-}
-
-.mpv-videoPlayerContainer-onTop {
-    z-index: 1000;
-}
-
-@keyframes mpvvideoplayer-zoomin {
-    from {
-        transform: scale(.8);
-        opacity: 0;
-    }
-
-    to {
-        transform: none;
-        opacity: initial;
-    }
-}

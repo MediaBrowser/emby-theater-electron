@@ -370,14 +370,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             return currentSrc;
         };
 
-        function onNavigatedToOsd() {
-
-            if (videoDialog) {
-                videoDialog.classList.remove('mpv-videoPlayerContainer-withBackdrop');
-                videoDialog.classList.remove('mpv-videoPlayerContainer-onTop');
-            }
-        }
-
         function createMediaElement(options) {
 
             return new Promise(function (resolve, reject) {
@@ -388,56 +380,29 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
                     require(['css!./libmpv'], function () {
 
-                        loading.show();
-
                         var dlg = document.createElement('div');
 
                         dlg.classList.add('mpv-videoPlayerContainer');
-
-                        if (options.backdropUrl && options.mediaType === 'Video') {
-
-                            dlg.classList.add('mpv-videoPlayerContainer-withBackdrop');
-                            dlg.style.backgroundImage = "url('" + options.backdropUrl + "')";
-                        }
-
-                        if (options.fullscreen && options.mediaType === 'Video') {
-                            dlg.classList.add('mpv-videoPlayerContainer-onTop');
-                        }
 
                         document.body.insertBefore(dlg, document.body.firstChild);
                         videoDialog = dlg;
 
                         var embed = document.createElement('embed');
                         embed.type = 'application/x-mpvjs';
-                        embed.classList.add('mpv-videoPlayer')
-                        embed.addEventListener('message', message)
-                        embed.style.opacity = 0
+                        embed.classList.add('mpv-videoPlayer');
+                        embed.addEventListener('message', message);
 
                         dlg.insertBefore(embed, dlg.firstChild);
-                        libmpv = embed
+                        libmpv = embed;
 
                         addEventListener('ready', async () => {
                             await observeProperty(['pause', 'time-pos', 'duration', 'volume', 'mute', 'eof-reached', 'demuxer-cache-state', 'demuxer-cache-time', 'estimated-vf-fps', 'sub-delay', 'speed', 'core-idle'])
-                            if (options.fullscreen && options.mediaType === 'Video') {
-                                zoomIn(dlg).then(resolve);
-                            } else {
-                                resolve();
-                            }
+                            resolve();
                         }, { once: true })
 
                     });
 
                 } else {
-
-                    if (libmpv) {
-                        libmpv.style.opacity = 0
-                    }
-                    dlg.style.opacity = 1
-                    if (options.backdropUrl && options.mediaType === 'Video') {
-
-                        dlg.classList.add('mpv-videoPlayerContainer-withBackdrop');
-                        dlg.style.backgroundImage = "url('" + options.backdropUrl + "')";
-                    }
 
                     resolve();
                 }
@@ -501,19 +466,15 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
 
 
         self.play = async function (options) {
+            if (options.fullscreen && options.item.MediaType == 'Video') {
+                await embyRouter.showVideoOsd()
+            }
             await displaySync();
             await createMediaElement(options);
             await new Promise((resolve, reject) => {
                 addEventListener('core-playing', resolve, { once: true })
                 playInternal(options);
             })
-            if (libmpv && options.mediaType === 'Video') {
-                libmpv.style.opacity = 1;
-            }
-            if (videoDialog && appSettings.get('mpv-vo') && appSettings.get('mpv-vo') !== 'libmpv' && window.platform === 'win32') {
-                videoDialog.style.opacity = 0;
-            }
-            await showOsd(options);
         };
 
         async function playInternal(options) {
@@ -541,7 +502,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 }
             }
 
-            var fullscreen = options.fullscreen || false;
             var mediaType = options.item.MediaType;
             var playMethod = options.playMethod;
             var startPositionTicks = options.playerStartPositionTicks || 0
@@ -601,8 +561,8 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 playerOptions["interpolation"] = true
             }
 
-            if (fullscreen) {
-                playerOptions["fullscreen"] = fullscreen
+            if (options.fullscreen && options.item.MediaType == 'Video') {
+                playerOptions["fullscreen"] = true;
             }
 
             if (mediaSource.RunTimeTicks == null || options.item.Type === 'Recording') {
@@ -635,23 +595,6 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
                 start: `${Math.floor(startPositionTicks / 10000000)}`,
                 pause: false
             })
-        }
-
-        async function showOsd(options) {
-            if (options.item.MediaType == 'Video') {
-                if (options.fullscreen) {
-                    await embyRouter.showVideoOsd()
-                    onNavigatedToOsd();
-
-                } else {
-                    embyRouter.setTransparency('backdrop');
-
-                    if (videoDialog) {
-                        videoDialog.classList.remove('mpv-videoPlayerContainer-withBackdrop');
-                        videoDialog.classList.remove('mpv-videoPlayerContainer-onTop');
-                    }
-                }
-            }
         }
 
         // Save this for when playback stops, because querying the time at that point might return 0
@@ -990,21 +933,7 @@ define(['globalize', 'apphost', 'playbackManager', 'pluginManager', 'events', 'e
             return playerState.playbackRate;
         };
 
-        function zoomIn(elem) {
-
-            return new Promise(function (resolve, reject) {
-
-                var duration = 240;
-                elem.style.animation = 'mpvvideoplayer-zoomin ' + duration + 'ms ease-in normal';
-                dom.addEventListener(elem, dom.whichAnimationEvent(), resolve, {
-                    once: true
-                });
-            });
-        }
-
         function destroyInternal() {
-
-            embyRouter.setTransparency('none');
 
             appSettings.set('mpv-volume', playerState.volume);
 
