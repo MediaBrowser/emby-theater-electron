@@ -980,6 +980,11 @@
 
             getWebContents().on('dom-ready', setStartInfo);
 
+            getWebContents().on('new-window', (event, url, frameName, disposition, options, additionalFeatures, referrer, postBody) => {
+                event.preventDefault()
+                electron.shell.openExternal(url);
+            })
+
             var url = getAppUrl();
 
             addPathIntercepts();

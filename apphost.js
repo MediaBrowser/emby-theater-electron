@@ -79,7 +79,7 @@
         features.push('remotevideo');
 
         features.push('screensaver');
-        //features.push('targetblank');
+        features.push('targetblank');
 
         features.push('otherapppromotions');
         features.push('fileinput');
