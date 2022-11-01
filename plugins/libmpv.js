@@ -242,7 +242,9 @@ define(['globalize', 'playbackManager', 'pluginManager', 'events', 'embyRouter',
                 MaxAudioChannels: '6',
                 MinSegments: '1',
                 BreakOnNonKeyFrames: true,
-                SegmentLength: '3'
+                //ManifestSubtitles: 'vtt',
+                SegmentLength: '3',
+                //MaxManifestSubtitles: '1'
             });
 
             profile.TranscodingProfiles.push({
@@ -354,6 +356,11 @@ define(['globalize', 'playbackManager', 'pluginManager', 'events', 'embyRouter',
                 Format: 'eia_708',
                 Method: 'VideoSideData'
             });
+
+            //profile.SubtitleProfiles.push({
+            //    Format: 'vtt',
+            //    Method: 'Hls'
+            //});
 
             profile.ResponseProfiles = [];
 
