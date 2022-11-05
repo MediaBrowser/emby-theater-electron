@@ -395,7 +395,6 @@ define(['globalize', 'playbackManager', 'pluginManager', 'events', 'embyRouter',
                         embed.type = 'application/x-mpvjs';
                         embed.classList.add('mpv-videoPlayer');
                         embed.addEventListener('message', message);
-
                         dlg.insertBefore(embed, dlg.firstChild);
                         libmpv = embed;
 
@@ -477,7 +476,16 @@ define(['globalize', 'playbackManager', 'pluginManager', 'events', 'embyRouter',
             await createMediaElement(options);
             await new Promise((resolve, reject) => {
                 addEventListener('core-playing', resolve, { once: true })
+
                 playInternal(options);
+
+                if (videoDialog) {
+                    if (appSettings.get('mpv-vo') && appSettings.get('mpv-vo') !== 'libmpv' && window.platform === 'win32') {
+                        videoDialog.style.opacity = 0;
+                    } else {
+                        videoDialog.style.opacity = 1;
+                    }
+                }
             })
         };
 
