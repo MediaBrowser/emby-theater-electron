@@ -654,9 +654,7 @@
                 sendCommand("back");
                 break;
             case 'browser-forward':
-                if (getWebContents().canGoForward()) {
-                    getWebContents().goForward();
-                }
+                sendCommand("forward");
                 break;
             case 'browser-stop':
                 sendCommand("stop");
