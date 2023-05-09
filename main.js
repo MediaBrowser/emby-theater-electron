@@ -732,6 +732,9 @@
         app.commandLine.appendSwitch("ignore-gpu-blacklist");
         app.commandLine.appendSwitch("register-pepper-plugins", getPluginEntry(path.join(__dirname, 'libmpv', process.arch)));
         app.commandLine.appendSwitch('no-sandbox');
+        app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
+        app.commandLine.appendSwitch('disable-site-isolation-trials')
+        app.commandLine.appendSwitch('disable-features', 'BlockInsecurePrivateNetworkRequests')
 
         if (isLinux()) {
             app.commandLine.appendSwitch('enable-transparent-visuals');
