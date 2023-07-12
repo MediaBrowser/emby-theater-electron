@@ -644,83 +644,107 @@
         //    default:
         //        return "unknown";
 
-        if (cmd != 'Unknown') {
-            //alert(cmd);
-        }
+        //if (cmd != 'unknown') {
+        //    alert(cmd);
+        //}
 
         switch (cmd) {
 
             case 'browser-backward':
                 sendCommand("back");
+                e.preventDefault();
                 break;
             case 'browser-forward':
                 sendCommand("forward");
+                e.preventDefault();
                 break;
             case 'browser-stop':
                 sendCommand("stop");
+                e.preventDefault();
                 break;
             case 'browser-search':
                 sendCommand("search");
+                e.preventDefault();
                 break;
             case 'browser-favorites':
                 sendCommand("favorites");
+                e.preventDefault();
                 break;
             case 'browser-home':
                 sendCommand("home");
+                e.preventDefault();
                 break;
             case 'browser-refresh':
                 sendCommand("refresh");
+                e.preventDefault();
                 break;
             case 'find':
                 sendCommand("search");
+                e.preventDefault();
                 break;
             case 'volume-mute':
                 sendCommand("togglemute");
+                e.preventDefault();
                 break;
             case 'volume-down':
                 sendCommand("volumedown");
+                e.preventDefault();
                 break;
             case 'volume-up':
                 sendCommand("volumeup");
+                e.preventDefault();
                 break;
             case 'media-nexttrack':
                 sendCommand("next");
+                e.preventDefault();
                 break;
             case 'media-previoustrack':
                 sendCommand("previous");
+                e.preventDefault();
                 break;
             case 'media-stop':
                 sendCommand("stop");
+                e.preventDefault();
                 break;
             case 'media-play':
                 sendCommand("play");
+                e.preventDefault();
                 break;
             case 'media-pause':
                 sendCommand("pause");
+                e.preventDefault();
                 break;
             case 'media-record':
                 sendCommand("record");
+                e.preventDefault();
                 break;
             case 'media-fast-forward':
                 sendCommand("fastforward");
+                e.preventDefault();
                 break;
             case 'media-rewind':
                 sendCommand("rewind");
+                e.preventDefault();
                 break;
             case 'media-play-pause':
                 sendCommand("playpause");
+                e.preventDefault();
                 break;
             case 'media-channel-up':
                 sendCommand("channelup");
+                e.preventDefault();
                 break;
             case 'media-channel-down':
                 sendCommand("channeldown");
+                e.preventDefault();
                 break;
             case 'menu':
                 sendCommand("menu");
+                e.preventDefault();
                 break;
             case 'info':
                 sendCommand("info");
+                e.preventDefault();
                 break;
         }
     }
