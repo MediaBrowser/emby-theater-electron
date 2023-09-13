@@ -328,6 +328,10 @@ define(['globalize', 'playbackManager', 'pluginManager', 'events', 'embyRouter',
                 Method: 'Embed'
             });
             profile.SubtitleProfiles.push({
+                Format: 'dvdsub',
+                Method: 'External'
+            });
+            profile.SubtitleProfiles.push({
                 Format: 'vtt',
                 Method: 'Embed'
             });
