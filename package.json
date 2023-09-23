@@ -24,7 +24,7 @@
   "homepage": "https://github.com/MediaBrowser/Emby.Theater.Electron#readme",
   "devDependencies": {
     "electron": "^9.4.0",
-    "node-gyp": "^6.1.0"
+    "node-gyp": "^9.4.0"
   },
   "dependencies": {
     "detect-rpi": "^1.4.0",
